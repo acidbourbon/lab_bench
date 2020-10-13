@@ -114,3 +114,9 @@ RUN echo "#!/bin/bash\n. /root-build/bin/thisroot.sh; export PYTHONPATH=\$PYTHON
  cd /workdir; ./start.sh " >entrypoint.sh ; chmod +x entrypoint.sh
 ENTRYPOINT "/entrypoint.sh"
 
+RUN apt-get update && \
+  apt-get -y install \
+  emacs
+
+# Install dependencies for LTSpice -> AWG interface
+RUN pip3 install numpy scipy pyltspice python-vxi11

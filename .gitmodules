@@ -1,0 +1,3 @@
+[submodule "workdir/python_modules/AWG70002A_scripts"]
+	path = workdir/python_modules/AWG70002A_scripts
+	url = https://github.com/acidbourbon/AWG70002A_scripts

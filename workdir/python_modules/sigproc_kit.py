@@ -157,34 +157,29 @@ def read_csv(filename):
 #+
 
 
-def discriminate(time,y,thresh,hysteresis,hyst_offset,**kwargs):
+def discriminate(time,y,thresh,hysteresis,hyst_offset):
   out = np.zeros(len(y))
   
   rising_thresh = thresh + hysteresis + hyst_offset
   falling_thresh = thresh + hyst_offset
-    
-  start = float(kwargs.get("start",time[0]))
   
   state = 1
   t1 = None
   tot = None
   
   for i in range(0,len(y)):
+    v = y[i]
     
-    if time[i] >= start:
-          
-      v = y[i]
-    
-      if state == 1: 
-        if v > rising_thresh:
-          state = 0
-          if t1 is None:
-            t1 = time[i]
-      else: #state == 0
-        if v < falling_thresh:
-          state = 1
-          if tot is None:
-            tot = time[i] - t1
+    if state == 1: 
+      if v > rising_thresh:
+        state = 0
+        if t1 is None:
+          t1 = time[i]
+    else: #state == 0
+      if v < falling_thresh:
+        state = 1
+        if tot is None:
+          tot = time[i] - t1
     
     out[i] = state
     
@@ -193,7 +188,18 @@ def discriminate(time,y,thresh,hysteresis,hyst_offset,**kwargs):
   if tot is None:
     tot = -1000
   return (out, t1, tot)
-    
+
+def rise_time(time,y,**kwargs):
+  lo = kwargs.get("lo",0)
+  hi = kwargs.get("hi",np.max(y))
+  
+  lo_thresh = kwargs.get("lo_thresh",hi*0.1)
+  hi_thresh = kwargs.get("hi_thresh",hi*0.9)
+
+  dummy, lo_time, dummy = discriminate(time,y,lo_thresh,0,0)
+  dummy, hi_time, dummy = discriminate(time,y,hi_thresh,0,0)
+  
+  return (hi_time-lo_time)
 
 
   

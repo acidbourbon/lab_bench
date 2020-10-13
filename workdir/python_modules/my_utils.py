@@ -16,10 +16,38 @@ def write_file_json(name,obj):
   json.dump(obj,fh,indent=2,sort_keys=True)
   fh.close()
 
+#def timestamp():
+#  import os
+#  return os.popen("""date '+%Y-%m-%d_%H-%M-%S'""").read().replace("\n","")
+
+
+def archive(**kwargs):
+  label = kwargs.get("label","")
+  import os
+  if(not(os.path.isdir("./archive"))):
+    os.mkdir("./archive")
+  data_dir = make_data_dir()
+  notebook = notebook_path()
+  #workdir = os.path.dirname(notebook)
+  notebook_basename = os.path.basename(notebook)
+  notebook_name = notebook_basename.replace(".ipynb","")
+  timestamp = os.popen("""date '+%Y-%m-%d_%H-%M-%S'""").read().replace("\n","")
+  archive_dir = "./archive/"+ timestamp + "_" + notebook_name
+    
+  if (label != ""):
+    archive_dir += ("_" + label)
+    
+  if(not(os.path.isdir(archive_dir))):
+    os.mkdir(archive_dir)
+    
+  os.system("cp {:s} {:s}/".format(notebook,archive_dir))
+  os.system("cp -R {:s} {:s}/".format(data_dir,archive_dir))
+  print("archived to {:s}".format(archive_dir))
 
 
 
-
+  
+  
 
 def notebook_path():
     from notebook import notebookapp
