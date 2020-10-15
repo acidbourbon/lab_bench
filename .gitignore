@@ -22,3 +22,4 @@ garfield_in.txt
 *.pickle
 *.svg
 2020-09-29_HyPhi*
+enable_vim_binding
