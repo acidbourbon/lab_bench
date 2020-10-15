@@ -120,3 +120,10 @@ RUN apt-get update && \
 
 # Install dependencies for LTSpice -> AWG interface
 RUN pip3 install numpy scipy pyltspice python-vxi11
+
+RUN pip3 install pyserial
+RUN pip3 install requests
+
+RUN apt-get update && \
+  apt-get -y install \
+  imagemagick
