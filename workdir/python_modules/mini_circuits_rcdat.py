@@ -57,7 +57,11 @@ def get_att():
 
 def set_att(att):
   send_cmd("SETATT={:3.3f}".format(att))
-  print("new attenuation: {:3.3f} dB".format(get_att()))
+  readback_att = get_att()
+  if(abs(readback_att -att) <.25):
+    print("new attenuation: {:3.3f} dB".format(readback_att))
+  else:
+    raise NameError("could not set desired attenuation")
 
 
     
