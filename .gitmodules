@@ -1,3 +1,6 @@
 [submodule "workdir/python_modules/AWG70002A_scripts"]
 	path = workdir/python_modules/AWG70002A_scripts
 	url = https://github.com/acidbourbon/AWG70002A_scripts
+[submodule "workdir/python_modules/numpy_ltspice_filter"]
+	path = workdir/python_modules/numpy_ltspice_filter
+	url = https://github.com/acidbourbon/numpy_ltspice_filter
