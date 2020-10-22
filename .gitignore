@@ -23,3 +23,6 @@ garfield_in.txt
 *.svg
 2020-09-29_HyPhi*
 enable_vim_binding
+param.txt
+sig_in.csv
+trancmd.txt
