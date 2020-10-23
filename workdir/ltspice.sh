@@ -1,2 +1,2 @@
 #!/bin/bash
-wine /LTspiceXVII/XVIIx64.exe
+wine /LTspiceXVII/XVIIx64.exe $@
