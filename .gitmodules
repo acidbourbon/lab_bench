@@ -4,3 +4,6 @@
 [submodule "workdir/python_modules/numpy_ltspice_filter"]
 	path = workdir/python_modules/numpy_ltspice_filter
 	url = https://github.com/acidbourbon/numpy_ltspice_filter
+[submodule "workdir/python_modules/lecroy_WR620ZI"]
+	path = workdir/python_modules/lecroy_WR620ZI
+	url = https://github.com/acidbourbon/lecroy_WR620ZI
