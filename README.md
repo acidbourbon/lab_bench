@@ -39,9 +39,17 @@ cd /path/to/lab_bench
 ./build_and_run.sh
 ```
 
+
 point your web browser to the following address:
 http://localhost:8888
 
 look at the example notebooks
+
+## LTspice
+
+when you start the docker for the first time,
+you have to start ~/ltspice.sh once for the stupid web sync thing
+to show you its pop-up window. Only THEN you can run it successfully
+in batch mode from python.
 
 have fun with the software
