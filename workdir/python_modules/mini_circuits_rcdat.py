@@ -1,5 +1,6 @@
 
 import requests
+import numpy as np
 
 
 local_objects = {}
@@ -62,6 +63,10 @@ def set_att(att):
     print("new attenuation: {:3.3f} dB".format(readback_att))
   else:
     raise NameError("could not set desired attenuation")
+    
+def set_att_lin(att_lin):
+  att = -20*np.log(att_lin)/np.log(10)
+  set_att(att)
 
 
     
