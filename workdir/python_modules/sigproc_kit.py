@@ -241,6 +241,11 @@ def rise_time(time,y,**kwargs):
   
   return (hi_time-lo_time)
 
+def const_frac_discriminator(time,y,**kwargs):
+  thresh = kwargs.get("thresh",0.2)
+  dummy, t1, tot = discriminate(time,normalize_max(y),thresh,0,0)
+  return (t1, tot)
+
 
   
   
