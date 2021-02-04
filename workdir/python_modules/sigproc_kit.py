@@ -4,6 +4,7 @@
 
 import numpy as np
 from scipy import interpolate
+from scipy.optimize import curve_fit
 
 
 
@@ -245,6 +246,75 @@ def const_frac_discriminator(time,y,**kwargs):
   thresh = kwargs.get("thresh",0.2)
   dummy, t1, tot = discriminate(time,normalize_max(y),thresh,0,0)
   return (t1, tot)
+
+
+def detector_signal_function(x, Q, tau1, tau2, delay):
+    x_ = x - delay
+    R  = 50
+    return (x_ > 0) * R*Q/(tau1-tau2) *(np.exp(-x_/tau1) - np.exp(-x_/tau2))
+
+def detector_signal_fit(time,y,**kwargs):
+  ##################################################
+  ##                     fit                      ##
+  ##################################################
+  
+  show = kwargs.get("show",1)
+  verbose = kwargs.get("verbose",1)
+
+  
+  xdata = time
+  ydata = remove_baseline(y)
+  
+  # remove nan with mask
+  mask = ~np.isnan(xdata) & ~np.isnan(ydata)
+  xdata = xdata[mask]
+  ydata = ydata[mask]
+  
+  
+  
+  p0 = kwargs.get("p0",[50e-12,5e-9,30e-9, 2e-9])
+  
+  popt, pcov = curve_fit(detector_signal_function, xdata, ydata, p0 = p0 )
+
+  R     = 50
+  Q     = popt[0]
+  tau1  = popt[1]
+  tau2  = popt[2]
+  delay = popt[3]
+  t_max = np.log(tau1/tau2)/((1./tau2)-(1./tau1))
+  v_max = R*Q  * 1/tau1 * (tau1/tau2)**(-tau2/(tau1-tau2))
+
+  if show:
+    from matplotlib import pyplot as plt
+    plt.plot(time,ydata,color="blue",label="data")
+    plt.plot(xdata, detector_signal_function(xdata, *popt), 'r-',
+             label="fit"
+            )
+    
+    
+    plt.xlabel("time (s)")
+    plt.ylabel("signal (V)")
+    plt.title("detector model fit")
+    plt.xscale("linear")
+    plt.legend()
+    plt.show
+    
+  if verbose:  
+    print("fit parameters:")
+    print("Q     = {:3.3f} pC".format(Q*1e12))
+    print("tau1  = {:3.3f} ns".format(tau1*1e9))
+    print("tau2  = {:3.3f} ns".format(tau2*1e9))
+    print("delay = {:3.3f} ns".format(delay*1e9))
+    print("t_max = {:3.3f} ns".format(t_max*1e9))
+    print("v_max = {:3.3f} mV".format(v_max*1e3))
+    print()
+    print("ltspice_formula:")
+    print(
+        "V=50*{:3.3e}/({:3.3e}-{:3.3e})*(exp(-time/{:3.3e})-exp(-time/{:3.3e}))".format(Q,tau1,tau2,tau1,tau2)
+         )
+    print()
+    print("return (Q, tau1, tau1, delay, v_max, t_max)")
+  return (Q, tau1, tau1, delay, v_max, t_max)
 
 
   
