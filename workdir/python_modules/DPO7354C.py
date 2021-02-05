@@ -243,9 +243,11 @@ def capture_waveforms(sources,**kwargs):
       else:
         y[source] += y_
     avg_runs += 1
-    print("acquire {:d}/{:d}".format(avg_runs,average),end="\r")
+    if ( average > 1):
+      print("acquire {:d}/{:d}".format(avg_runs,average),end="\r")
 
-  print("")
+  if ( average > 1):
+    print("")
 
   for source in sources:
     y[source] /= float(average)
