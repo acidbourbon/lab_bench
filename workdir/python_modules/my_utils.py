@@ -3,6 +3,46 @@ import os
 
 
 
+def hist2d(x,y,**kwargs):
+  from matplotlib import pyplot as plt
+  import numpy as np
+
+  xedges = kwargs.get("xedges",np.linspace(np.min(x),np.max(x),100))
+  yedges = kwargs.get("yedges",np.linspace(np.min(y),np.max(y),100))
+  
+  
+  H, xedges, yedges = np.histogram2d( x, y, bins=(xedges, yedges))
+  H = H.T  # Let each row list bins with common y range.
+  X, Y = np.meshgrid(xedges, yedges)
+  
+  #cmap = plt.get_cmap('PiYG')
+  #cmap = plt.get_cmap('rainbow')
+  #cmap = plt.get_cmap('magma')
+  #cmap = plt.get_cmap('plasma')
+  #// https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html
+  cmap = plt.get_cmap('jet')
+  
+  plt.pcolormesh(X, Y, H, cmap=cmap)
+  
+  plt.xlabel(kwargs.get("xlabel",""))
+  plt.ylabel(kwargs.get("ylabel",""))
+  plt.title(kwargs.get("title","Histogram Title"))
+  plt.show()
+
+
+
+
+def big_figure():
+  from IPython.display import set_matplotlib_formats
+  set_matplotlib_formats('png')
+  plt.rcParams["figure.figsize"] = (12,9)
+
+def small_figure():
+  from IPython.display import set_matplotlib_formats
+  set_matplotlib_formats('png')
+  plt.rcParams["figure.figsize"] = (6,4)
+
+
 def get_file_json(name):
   if os.path.isfile(name) :
     fh = open(name,"r")

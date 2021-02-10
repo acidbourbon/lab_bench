@@ -6,6 +6,9 @@ import numpy as np
 from scipy import interpolate
 from scipy.optimize import curve_fit
 
+def remove_nan(data):
+  mask = ~np.isnan(data)
+  return data[mask]
 
 
 def remove_baseline(y,**kwargs):
@@ -313,8 +316,8 @@ def detector_signal_fit(time,y,**kwargs):
         "V=50*{:3.3e}/({:3.3e}-{:3.3e})*(exp(-time/{:3.3e})-exp(-time/{:3.3e}))".format(Q,tau1,tau2,tau1,tau2)
          )
     print()
-    print("return (Q, tau1, tau1, delay, v_max, t_max)")
-  return (Q, tau1, tau1, delay, v_max, t_max)
+    print("return (Q, tau1, tau2, delay, v_max, t_max)")
+  return (Q, tau1, tau2, delay, v_max, t_max)
 
 
   
