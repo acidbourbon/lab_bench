@@ -33,11 +33,13 @@ def hist2d(x,y,**kwargs):
 
 
 def big_figure():
+  from matplotlib import pyplot as plt
   from IPython.display import set_matplotlib_formats
   set_matplotlib_formats('png')
   plt.rcParams["figure.figsize"] = (12,9)
 
 def small_figure():
+  from matplotlib import pyplot as plt 
   from IPython.display import set_matplotlib_formats
   set_matplotlib_formats('png')
   plt.rcParams["figure.figsize"] = (6,4)
