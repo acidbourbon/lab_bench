@@ -152,7 +152,12 @@ def fft_gauss_LPF(x,time_vec,**kwargs):
           ) * delta_t
       )
   
-  return np.fft.irfft(freq_vec)[pad_samples:samples+pad_samples]
+  
+  out = np.fft.irfft(freq_vec)[pad_samples:samples+pad_samples]
+  while (len(out) < samples):
+    out = np.concatenate((out,np.array([out[-1]])),axis=None)
+  
+  return out  
 
       
 

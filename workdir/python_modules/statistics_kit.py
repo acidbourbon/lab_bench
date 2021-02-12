@@ -64,3 +64,19 @@ def median_x_std_y_slices(x,y,**kwargs):
       out_y_list += [np.std(sel_y)]
     
   return (np.array(out_x_list), np.array(out_y_list)) 
+
+
+
+def med3_filter(data):
+  out = []
+  len_data = len(data)
+  out += [data[0]]
+  for i in range(1,len_data-1):
+    med = np.median([data[i-1:i+2]])
+    if ~(np.isnan(med)):
+      out += [med]
+    else:
+      out += [data[i]]
+  out += [data[len_data-1]]
+  return np.array(out)
+
