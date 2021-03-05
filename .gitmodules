@@ -7,3 +7,6 @@
 [submodule "workdir/python_modules/lecroy_WR620ZI"]
 	path = workdir/python_modules/lecroy_WR620ZI
 	url = https://github.com/acidbourbon/lecroy_WR620ZI
+[submodule "workdir/python_modules/M8195A_scripts"]
+	path = workdir/python_modules/M8195A_scripts
+	url = https://github.com/acidbourbon/M8195A_scripts

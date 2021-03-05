@@ -53,3 +53,12 @@ to show you its pop-up window. Only THEN you can run it successfully
 in batch mode from python.
 
 have fun with the software
+
+## adding a git submodule
+```
+git submodule add https://github.com/acidbourbon/M8195A_scripts workdir/python_modules/M8195A_scripts
+git submodule init
+git submodule update
+
+git commit -a -m "blah"
+```
