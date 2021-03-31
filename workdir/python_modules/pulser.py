@@ -1,1 +1,0 @@
-AWG70002A_scripts/pulser.py
