@@ -10,6 +10,8 @@ def remove_nan(data):
   mask = ~np.isnan(data)
   return data[mask]
 
+def sqwave(x):
+  return 2*((np.ceil(x/np.pi)%2)-0.5)
 
 def remove_baseline(y,**kwargs):
   fraction = kwargs.get("fraction",0.08)
