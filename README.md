@@ -16,6 +16,16 @@ git clone https://github.com/acidbourbon/lab_bench
 git submodule init
 git submodule update
 ```
+## how to update
+
+update this git and all submodules (other gits) that are
+used in the container.
+
+```
+git pull 
+git submodule init
+git submodule update
+```
 
 ## how to build and start the container
 
