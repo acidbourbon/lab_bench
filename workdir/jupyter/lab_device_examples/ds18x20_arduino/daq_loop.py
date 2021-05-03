@@ -6,6 +6,10 @@ import re
 import json
 from junction_temp import *
 
+from IPython.display import clear_output
+
+import plot
+
 
 device = '/dev/ttyACM0'
 baudrate = 115200
@@ -13,8 +17,9 @@ baudrate = 115200
 timeout = 0.1
 ser = serial.Serial(device, baudrate, timeout=timeout)
 
-alias = {}
-sensors = {}
+
+local_objects = {}
+local_objects["sensors"] = {}
 
 def load_alias():
   f = open('alias.json', 'r')
@@ -34,6 +39,7 @@ def get_chunk():
 
 def log():
   mytime = round(time.time())
+  sensors = local_objects["sensors"]
   for name in sensors.keys():
     f = open(name+".csv", "a")
     f.write(str(mytime))
@@ -68,21 +74,26 @@ def loop():
             temp_C = float(match.groups()[0])
             if temp_C < 85:
               if id in alias:
-                sensors[alias[id]] = temp_C
+                local_objects["sensors"][alias[id]] = temp_C
               else: 
-                sensors[id] = temp_C
+                local_objects["sensors"][id] = temp_C
     curr_time = time.time()
     if( curr_time > (last_time + print_interval)):
       alias = load_alias()
       try:
         jt = read_junction_temp()
-        sensors["JNC_T1"] = jt
+        local_objects["sensors"]["JNC_T1"] = jt
       except:
         print("could not read multimeter")
   
-      print(json.dumps(sensors, indent=2, sort_keys=True))
+      clear_output(wait=True)
       log()
+      print(json.dumps(local_objects["sensors"], indent=2, sort_keys=True))
+      try:
+        plot.plot()
+      except:
+        print("could not plot")
       last_time = curr_time
-      sensors = {}
+      local_objects["sensors"] = {}
 
 
