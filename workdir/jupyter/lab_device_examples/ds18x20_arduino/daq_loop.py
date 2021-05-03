@@ -4,12 +4,13 @@ import time
 import serial
 import re
 import json
-from junction_temp import *
+#from junction_temp import *
 
 from IPython.display import clear_output
 
 import plot
 
+print_interval = 10
 
 device = '/dev/ttyACM0'
 baudrate = 115200
@@ -55,7 +56,6 @@ def loop():
   id = 0
   
   
-  print_interval = 5
   
   last_time = 0
   
@@ -80,11 +80,11 @@ def loop():
     curr_time = time.time()
     if( curr_time > (last_time + print_interval)):
       alias = load_alias()
-      try:
-        jt = read_junction_temp()
-        local_objects["sensors"]["JNC_T1"] = jt
-      except:
-        print("could not read multimeter")
+#      try:
+#        jt = read_junction_temp()
+#        local_objects["sensors"]["JNC_T1"] = jt
+#      except:
+#        print("could not read multimeter")
   
       clear_output(wait=True)
       log()
