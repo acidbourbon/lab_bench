@@ -198,18 +198,21 @@ def program_trace(xdata,ydata,**kwargs):
   
   
   trace       = int(kwargs.get("trace",1))
-  #idle_val    = spice_float(kwargs.get("idle_val",0))
+  idle_val    = spice_float(kwargs.get("idle_val",0))
   yscale      = spice_float(kwargs.get("yscale",1))
   xscale      = spice_float(kwargs.get("xscale",1))
   delay       = spice_float(kwargs.get("delay",0e-9))
   sample_rate = int(spice_float(kwargs.get("sample_rate",8e9)))
   invert      = int(kwargs.get("invert",0))
-  period      = spice_float(kwargs.get("period",0))
+  period      = spice_float(kwargs.get("period",1e-6))
 
   if(invert):
     yscale = yscale * (-1)
   
-  set_waveform(trace,xdata*xscale+delay,ydata*yscale,period=period)
+  set_waveform(trace,xdata*xscale+delay,ydata*yscale,
+               period=period,
+              idle_val = idle_val
+              )
   
   
 
