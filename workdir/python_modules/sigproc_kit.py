@@ -6,6 +6,22 @@ import numpy as np
 from scipy import interpolate
 from scipy.optimize import curve_fit
 
+
+def RC_filter(t,y,R,C):
+  ir = 1/(R*C)*np.exp(-t/(R*C))
+  return fft_convolve(t,[y,ir])
+
+def nth_edge_time(t,y,n):
+  counter = -1
+  last_state = 0
+  for i in range(0,len(t)):
+    state = y[i]
+    if ((last_state <= 0.5) and (state > 0.5)):
+      counter += 1
+    last_state = state
+    if (counter >= n):
+      return t[i]
+
 def remove_nan(data):
   mask = ~np.isnan(data)
   return data[mask]
