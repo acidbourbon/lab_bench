@@ -11,6 +11,10 @@ def RC_filter(t,y,R,C):
   ir = 1/(R*C)*np.exp(-t/(R*C))
   return fft_convolve(t,[y,ir])
 
+def CR_filter(t,y,R,C):
+  ir = deltafunc_dt(t) - 1/(R*C)*np.exp(-t/(R*C))
+  return fft_convolve(t,[y,ir])
+
 def nth_edge_time(t,y,n):
   counter = -1
   last_state = 0
