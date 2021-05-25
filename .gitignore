@@ -27,3 +27,6 @@ param.txt
 sig_in.csv
 trancmd.txt
 lab_bench_MW
+*.log
+*.net
+*.raw
