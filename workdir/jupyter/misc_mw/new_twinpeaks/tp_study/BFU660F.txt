@@ -1,0 +1,74 @@
+*	NXP Semiconductors
+*	GUMMEL-POON Transistor MODEL IN SPICE SYNTAX
+*	BFU660F Model in SOT343F
+*	VALID UP TO 4 GHZ
+*	October 2010
+*	This file includes parameters for chip of BFU660 in package SOT343F.
+*	BEGIN OF MODEL-DEFINITIONS
+* 	transistor:BFU660F
+* 	1:COLLECTOR; 2: BASE; 3: EMITTER
+*	.OPTION TNOM = 25,
+.SUBCKT BFU660F 1 2 3
+Q1 11 22 33 33 Chip_660 Area=1 Temp=25 M=10
+*Q1 11 22 33 33 Chip_660 Area=1 Region=1 Temp=25 Trise=0 Mode=1 Noise=yes M=10
+*package SOT343F
+Rb2x	22 24	1.07413
+Rc2x	11 12	1.0494
+Lb2x	22 24	6.6493e-11
+Lc2x	11 12	6.67134e-11
+Cbe1	25 33	1.575795e-13
+Cbe2	22 23	6.4818e-014
+Cce1	13 33	1.3083644e-13
+Cce2	11 14	4.91284e-14
+Cbc1	25 28	3.101589e-15
+Cbc2	15 22	9.55071e-15
+Lb1	 2 25	2.82948e-10
+Lb2	24 25	7.31262e-10
+Lc1	 1 13	4.805e-15
+Lc2	12 13	3.84827e-10
+Le1	 3 33	7.94063e-11
+Rbc2	11 15	147.447
+Rbc1	13 28	855.844
+Rbe2	23 33	7.31739
+Rce2	14 33	8.25899
+.MODEL Chip_660 NPN
++      Is   = 8.964e-18
++      Bf   = 190
++      Nf   = 1.006
++      Vaf  = 24.79
++      Ikf  = 35.03e-3
++      Ise  = 70.30e-15
++      Ne   = 1.960
++      Br   = 27.00
++      Nr   = 1.005
++      Var  = 4.002
++      Ikr  = 2.882e-3
++      Isc  = 886.0e-18
++      Nc   = 1.474
++      Rb   = 15.63
++      Irb  = 24.42e-6
++      Rbm  = 12.62
++      Re   = 6.341
++      Rc   = 5.701
++      Cje  = 60.88e-15
++      Vje  = 0.715
++      Mje  = 446.3e-3
++      Cjc  = 15.53f
++      Vjc  = 512.0e-3
++      Mjc  = 169.2e-3
++      Xcjc = 1.0000
++      Cjs  = 321.1e-15
++      Vjs  = 60.30e-3
++      Mjs  = 290.2e-3
++      Fc   = 500.0e-3
++      Xtf  = 301.1e-3
++      Tf   = 4.754e-12
++      Vtf  = 1.214
++      Itf  = 104.2e-6
++      Ptf  = 20.0
++      Tr   = 1.700e-12
++      Eg   = 1.110
++      Xtb  = 0.000
++      Xti  = 3.000
+.ENDS
+
