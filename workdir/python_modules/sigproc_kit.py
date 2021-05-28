@@ -209,12 +209,16 @@ def discriminate(time,y,thresh,**kwargs):
   hysteresis = kwargs.get("hysteresis",0)               
   # if offset==0 -> hysteresis is symmetrical around thresh
   hyst_offset = kwargs.get("hyst_offset",0)
+    
+  interpolate = kwargs.get("interpolate",True)
   
     
   out = np.zeros(len(y))
   
   rising_thresh  = thresh + hysteresis/2 + hyst_offset
   falling_thresh = thresh - hysteresis/2 + hyst_offset
+    
+
   
   state = 1
   t1 = None
@@ -227,19 +231,31 @@ def discriminate(time,y,thresh,**kwargs):
       if v > rising_thresh:
         state = 0
         if t1 is None:
-          t1 = time[i]
+          if (interpolate and (i>0)):
+            dt = time[i]-time[i-1]
+            dy = y[i] - y[i-1]
+            thresh_frac = (rising_thresh - y[i-1])/dy
+            t1 = time[i-1] + dt*thresh_frac
+          else:
+            t1 = time[i]
     else: #state == 0
       if v < falling_thresh:
         state = 1
         if tot is None:
-          tot = time[i] - t1
+          if (interpolate and (i>0)):
+            dt = time[i]-time[i-1]
+            dy = y[i] - y[i-1] # negative
+            thresh_frac = (falling_thresh - y[i-1])/dy
+            tot = time[i-1] + dt*thresh_frac -t1
+          else:
+            tot = time[i] - t1
     
     out[i] = state
     
   if t1 is None:
-    t1 = -1000
+    t1 = float('nan')
   if tot is None:
-    tot = -1000
+    tot = float('nan')
   return (1-out, t1, tot)
 
 def rise_time(time,y,**kwargs):
