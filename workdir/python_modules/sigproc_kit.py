@@ -256,7 +256,7 @@ def rise_time(time,y,**kwargs):
 
 def const_frac_discriminator(time,y,**kwargs):
   thresh = kwargs.get("thresh",0.2)
-  dummy, t1, tot = discriminate(time,normalize_max(y),thresh,0,0)
+  dummy, t1, tot = discriminate(time,normalize_max(y),thresh)
   return (t1, tot)
 
 
