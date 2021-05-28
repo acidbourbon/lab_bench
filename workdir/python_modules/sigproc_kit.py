@@ -198,41 +198,19 @@ def read_csv(filename):
 
 
 
-#+
-#|                                    example of my hystereris definition
-#|
-#|
-#|                                                 XXXXXXX
-#|                                                XX     XX
-#|                                              XXX       XX
-#|                             ^     +-------------------------------------------+
-#|                             |               X            XX
-#|        hysteresis = 10 mV   |              XX thresh = 30 mV
-#|                             |     +-------------------------------------------+   +
-#|                             |             X                XX                     |  hyst_offset = -4 mV
-#|                             v     +-------------------------------------------+   v
-#|                                         XX                   XX
-#|                                        XX                     XX
-#|                                       XX                       XXXX
-#|                                     XXX                            XXXXXXXXX
-#|                                   XXX                                       X XXXXXXXXXXXX XXXX   XXXXXXXXXXXXXX
-#|                              XXXXXX                                                           XXXXX             XXX
-#|
-#|
-#|
-#|
-#|                              +--------------+                  +-------------------+
-#|        discriminator out                    |                  |
-#|                                             +------------------+
-#|
-#+
 
 
-def discriminate(time,y,thresh,hysteresis,hyst_offset):
+
+def discriminate(time,y,thresh,**kwargs):
+    
+  # argument structure has changed! no more hysteresis definiton by default
+    
+  hysteresis = kwargs.get("hysteresis",0)               
+  hyst_offset = kwargs.get("hyst_offset",0)
   out = np.zeros(len(y))
   
-  rising_thresh = thresh + hysteresis + hyst_offset
-  falling_thresh = thresh + hyst_offset
+  rising_thresh  = thresh + hysteresis/2 + hyst_offset
+  falling_thresh = thresh - hysteresis/2 + hyst_offset
   
   state = 1
   t1 = None
@@ -258,7 +236,7 @@ def discriminate(time,y,thresh,hysteresis,hyst_offset):
     t1 = -1000
   if tot is None:
     tot = -1000
-  return (out, t1, tot)
+  return (1-out, t1, tot)
 
 def rise_time(time,y,**kwargs):
   lo = kwargs.get("lo",0)
