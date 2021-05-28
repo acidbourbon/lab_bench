@@ -249,8 +249,8 @@ def rise_time(time,y,**kwargs):
   lo_thresh = kwargs.get("lo_thresh",hi*0.1)
   hi_thresh = kwargs.get("hi_thresh",hi*0.9)
 
-  dummy, lo_time, dummy = discriminate(time,y,lo_thresh,0,0)
-  dummy, hi_time, dummy = discriminate(time,y,hi_thresh,0,0)
+  dummy, lo_time, dummy = discriminate(time,y,lo_thresh)
+  dummy, hi_time, dummy = discriminate(time,y,hi_thresh)
   
   return (hi_time-lo_time)
 
