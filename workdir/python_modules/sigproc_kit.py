@@ -204,9 +204,13 @@ def read_csv(filename):
 def discriminate(time,y,thresh,**kwargs):
     
   # argument structure has changed! no more hysteresis definiton by default
-    
+  
+  # pk2pk hysteresis, difference between upper and lower threshold
   hysteresis = kwargs.get("hysteresis",0)               
+  # if offset==0 -> hysteresis is symmetrical around thresh
   hyst_offset = kwargs.get("hyst_offset",0)
+  
+    
   out = np.zeros(len(y))
   
   rising_thresh  = thresh + hysteresis/2 + hyst_offset
