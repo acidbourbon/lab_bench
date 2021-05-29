@@ -10,3 +10,6 @@
 [submodule "workdir/python_modules/M8195A_scripts"]
 	path = workdir/python_modules/M8195A_scripts
 	url = https://github.com/acidbourbon/M8195A_scripts
+[submodule "workdir/python_modules/kilom_spi"]
+	path = workdir/python_modules/kilom_spi
+	url = https://github.com/hennomann/kilom_spi

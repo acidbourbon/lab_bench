@@ -127,3 +127,5 @@ RUN pip3 install requests
 RUN apt-get update && \
   apt-get -y install \
   imagemagick
+
+RUN pip3 install jsonrpclib
