@@ -6,6 +6,26 @@ import numpy as np
 from scipy import interpolate
 from scipy.optimize import curve_fit
 
+
+def RC_filter(t,y,R,C):
+  ir = 1/(R*C)*np.exp(-t/(R*C))
+  return fft_convolve(t,[y,ir])
+
+def CR_filter(t,y,R,C):
+  ir = deltafunc_dt(t) - 1/(R*C)*np.exp(-t/(R*C))
+  return fft_convolve(t,[y,ir])
+
+def nth_edge_time(t,y,n):
+  counter = -1
+  last_state = 0
+  for i in range(0,len(t)):
+    state = y[i]
+    if ((last_state <= 0.5) and (state > 0.5)):
+      counter += 1
+    last_state = state
+    if (counter >= n):
+      return t[i]
+
 def remove_nan(data):
   mask = ~np.isnan(data)
   return data[mask]
@@ -178,41 +198,27 @@ def read_csv(filename):
 
 
 
-#+
-#|                                    example of my hystereris definition
-#|
-#|
-#|                                                 XXXXXXX
-#|                                                XX     XX
-#|                                              XXX       XX
-#|                             ^     +-------------------------------------------+
-#|                             |               X            XX
-#|        hysteresis = 10 mV   |              XX thresh = 30 mV
-#|                             |     +-------------------------------------------+   +
-#|                             |             X                XX                     |  hyst_offset = -4 mV
-#|                             v     +-------------------------------------------+   v
-#|                                         XX                   XX
-#|                                        XX                     XX
-#|                                       XX                       XXXX
-#|                                     XXX                            XXXXXXXXX
-#|                                   XXX                                       X XXXXXXXXXXXX XXXX   XXXXXXXXXXXXXX
-#|                              XXXXXX                                                           XXXXX             XXX
-#|
-#|
-#|
-#|
-#|                              +--------------+                  +-------------------+
-#|        discriminator out                    |                  |
-#|                                             +------------------+
-#|
-#+
 
 
-def discriminate(time,y,thresh,hysteresis,hyst_offset):
+
+def discriminate(time,y,thresh,**kwargs):
+    
+  # argument structure has changed! no more hysteresis definiton by default
+  
+  # pk2pk hysteresis, difference between upper and lower threshold
+  hysteresis = kwargs.get("hysteresis",0)               
+  # if offset==0 -> hysteresis is symmetrical around thresh
+  hyst_offset = kwargs.get("hyst_offset",0)
+    
+  interpolate = kwargs.get("interpolate",True)
+  
+    
   out = np.zeros(len(y))
   
-  rising_thresh = thresh + hysteresis + hyst_offset
-  falling_thresh = thresh + hyst_offset
+  rising_thresh  = thresh + hysteresis/2 + hyst_offset
+  falling_thresh = thresh - hysteresis/2 + hyst_offset
+    
+
   
   state = 1
   t1 = None
@@ -225,20 +231,32 @@ def discriminate(time,y,thresh,hysteresis,hyst_offset):
       if v > rising_thresh:
         state = 0
         if t1 is None:
-          t1 = time[i]
+          if (interpolate and (i>0)):
+            dt = time[i]-time[i-1]
+            dy = y[i] - y[i-1]
+            thresh_frac = (rising_thresh - y[i-1])/dy
+            t1 = time[i-1] + dt*thresh_frac
+          else:
+            t1 = time[i]
     else: #state == 0
       if v < falling_thresh:
         state = 1
         if tot is None:
-          tot = time[i] - t1
+          if (interpolate and (i>0)):
+            dt = time[i]-time[i-1]
+            dy = y[i] - y[i-1] # negative
+            thresh_frac = (falling_thresh - y[i-1])/dy
+            tot = time[i-1] + dt*thresh_frac -t1
+          else:
+            tot = time[i] - t1
     
     out[i] = state
     
   if t1 is None:
-    t1 = -1000
+    t1 = float('nan')
   if tot is None:
-    tot = -1000
-  return (out, t1, tot)
+    tot = float('nan')
+  return (1-out, t1, tot)
 
 def rise_time(time,y,**kwargs):
   lo = kwargs.get("lo",0)
@@ -247,14 +265,14 @@ def rise_time(time,y,**kwargs):
   lo_thresh = kwargs.get("lo_thresh",hi*0.1)
   hi_thresh = kwargs.get("hi_thresh",hi*0.9)
 
-  dummy, lo_time, dummy = discriminate(time,y,lo_thresh,0,0)
-  dummy, hi_time, dummy = discriminate(time,y,hi_thresh,0,0)
+  dummy, lo_time, dummy = discriminate(time,y,lo_thresh)
+  dummy, hi_time, dummy = discriminate(time,y,hi_thresh)
   
   return (hi_time-lo_time)
 
 def const_frac_discriminator(time,y,**kwargs):
   thresh = kwargs.get("thresh",0.2)
-  dummy, t1, tot = discriminate(time,normalize_max(y),thresh,0,0)
+  dummy, t1, tot = discriminate(time,normalize_max(y),thresh)
   return (t1, tot)
 
 

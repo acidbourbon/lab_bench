@@ -84,12 +84,20 @@ RUN apt-get update && \
   python3-pip \
   liblapack3 \
   libboost-all-dev \
-  wget 
+  wget \
+  tmux \
+  emacs \
+  imagemagick
   
   
 RUN pip3 install --upgrade pip
 RUN pip3 install setuptools && \
-  pip3 install pythondialog python-vxi11
+  pip3 install pythondialog python-vxi11 \
+  jupyter \
+  numpy scipy pyltspice python-vxi11 \
+  pyserial \
+  requests \
+  jsonrpclib
 
 # for garfield to feel at home make symlink to som gsl libs
 RUN ln -s /usr/lib/x86_64-linux-gnu/libgslcblas.so.0.0.0 /usr/lib/libgsl.so.0 
@@ -98,11 +106,7 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libgslcblas.so.0.0.0 /usr/lib/libgsl.so.0
 # windows binaries and libraries you'll need
 ADD ./build/LTspiceXVII.tgz /
 
-RUN pip3 install jupyter
 
-RUN apt-get update && \
-  apt-get -y install \
-  tmux
 
 # in case you need that win32 support some time ... seems not important
 #RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
@@ -114,16 +118,6 @@ RUN echo "#!/bin/bash\n. /root-build/bin/thisroot.sh; export PYTHONPATH=\$PYTHON
  cd /workdir; ./start.sh " >entrypoint.sh ; chmod +x entrypoint.sh
 ENTRYPOINT "/entrypoint.sh"
 
-RUN apt-get update && \
-  apt-get -y install \
-  emacs
 
-# Install dependencies for LTSpice -> AWG interface
-RUN pip3 install numpy scipy pyltspice python-vxi11
 
-RUN pip3 install pyserial
-RUN pip3 install requests
 
-RUN apt-get update && \
-  apt-get -y install \
-  imagemagick

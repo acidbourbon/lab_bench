@@ -1,0 +1,78 @@
+*	NXP Semiconductors 								
+*	GUMMEL-POON Transistor MODEL IN SPICE SYNTAX					
+*	BFU760F Model in SOT343F							
+*	VALID UP TO 4 GHZ						
+*	October 2010									
+*	This file includes parameters for chip of BFU760 in package SOT343F.
+*	BEGIN OF MODEL-DEFINITIONS								
+* 	transistor:BFU760F
+* 	1:COLLECTOR; 2: BASE; 3: EMITTER											
+*	.OPTION TNOM = 25, 
+
+.SUBCKT BFU760F 1 2 3		
+Q1 11 22 33 33 Chip_760 Area=1 Temp=25 M=10
+*Q1 11 22 33 33 Chip_760 Area=1 Region=1 Temp=25 Trise=0 Mode=1 Noise=yes M=10
+
+*package SOT343F		
+
+Rb2x	22 24	1.07413
+Rc2x	11 12	1.0494
+Lb2x	22 24	6.6493e-11
+Lc2x	11 12	6.67134e-11
+Cbe1	25 33	1.575795e-13
+Cbe2	22 23	6.4818e-014
+Cce1	13 33	1.3083644e-13
+Cce2	11 14	4.91284e-14
+Cbc1	25 28	3.101589e-15
+Cbc2	15 22	9.55071e-15
+Lb1	 2 25	2.82948e-10
+Lb2	24 25	7.31262e-10
+Lc1	 1 13	4.805e-15
+Lc2	12 13	3.84827e-10
+Le1	 3 33	7.94063e-11
+Rbc2	11 15	147.447
+Rbc1	13 28	855.844
+Rbe2	23 33	7.31739
+Rce2	14 33	8.25899						
+									
+.MODEL Chip_760 NPN
++	Is   = 59.79E-18 
++	Bf   = 275.1 
++	Nf   = 992.6e-3 
++	Vaf  = 10.34  
++	Ikf  = 24.45e-3 
++	Ise  = 24.75e-15 
++	Ne   = 2.024  
++	Br   = 81.44  
++	Nr   = 980.0e-3 
++	Var  = 4.245  
++	Ikr  = 3.620e-3 
++	Isc  = 100.0e-18 
++	Nc   = 1.578  
++	Rb   = 3.32 
++	Irb  = 12.17e-3
++	Rbm  = 1.2 
++	Re   = 1.841  
++	Rc   = 50.31  
++	Cje  = 70.04e-15 
++	Vje  = 665.6e-3 
++	Mje  = 109.9e-3 
++	Cjc  = 21.67e-15 
++	Vjc  = 639.9e-3 
++	Mjc  = 267.9e-3 
++	Xcjc = 1.000  
++	Cjs  = 298.9e-15 
++	Vjs  = 360.9e-3
++	Mjs  = 661.7e-3 
++	Fc   = 500.0e-3
++	Xtf  = 43.92 
++	Tf   = 1.3236e-12
++	Vtf  = -17.68 
++	Itf  = 89e-3 
++	Ptf  = 75.6 
++	Tr   = 1.7e-12 
++	Eg   = 1.110  
++	Xtb  = 0.000  
++	Xti  = 3.000  
+.ENDS
+
