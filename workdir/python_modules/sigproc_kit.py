@@ -272,7 +272,8 @@ def rise_time(time,y,**kwargs):
 
 def const_frac_discriminator(time,y,**kwargs):
   thresh = kwargs.get("thresh",0.2)
-  dummy, t1, tot = discriminate(time,normalize_max(y),thresh)
+  # hysteresis kwargs argument is passed to discriminate function
+  dummy, t1, tot = discriminate(time,normalize_max(y),thresh,**kwargs)
   return (t1, tot)
 
 
