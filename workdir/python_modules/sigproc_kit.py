@@ -15,6 +15,19 @@ def CR_filter(t,y,R,C):
   ir = deltafunc_dt(t) - 1/(R*C)*np.exp(-t/(R*C))
   return fft_convolve(t,[y,ir])
 
+
+def add_noise(t,y,**kwargs):
+  rms = kwargs.get("rms",1)
+  bw    = kwargs.get("bw",0)
+  
+  noise = rms*np.random.normal(size=len(t))
+  if (bw != 0):
+    R = 1
+    C = 1/(bw*2*np.pi*R)
+    noise = RC_filter(t,noise,R,C)
+
+  return y+noise
+
 def nth_edge_time(t,y,n):
   counter = -1
   last_state = 0
