@@ -46,6 +46,18 @@ def remove_nan(data):
 def sqwave(x):
   return 2*((np.ceil(x/np.pi)%2)-0.5)
 
+def rampwave(x):
+  return -1 + x/np.pi
+
+def invrampwave(x):
+  return 1 - x/np.pi
+
+def triwave(x):
+    
+  return (x < np.pi/2)*(2*x/np.pi) \
+       + (x >= np.pi/2)*(x < 3./2*np.pi)*(1-(x-np.pi/2)/(np.pi/2)) \
+       + (x >= 3./2*np.pi)*(-1+(x-3./2.*np.pi)/(np.pi/2))
+
 def remove_baseline(y,**kwargs):
   fraction = kwargs.get("fraction",0.08)
   # use first 8% of the signal to determine baseline
