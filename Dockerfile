@@ -122,6 +122,10 @@ RUN apt-get update && \
   apt-get -y install \
   texlive-xetex texlive-fonts-recommended texlive-latex-recommended
 
+RUN apt-get update && \
+  apt-get -y install \
+  python3-sympy \
+  python3-pandas
 
 
 
