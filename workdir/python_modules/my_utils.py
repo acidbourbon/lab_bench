@@ -168,6 +168,49 @@ def show(plt,**kwargs):
   plt.savefig(plotfile)
 
   plt.show()
+    
+def save_animation_frame(plt):
+  import os
+  ext = ".png"
+  data_dir = animation_cache()
+
+  files = os.listdir(data_dir) # returns list
+  names = [] 
+  for file in files:
+    if ext in file:
+      names += [file.replace(ext,"")]
+  names.sort()
+
+  plot_counter = 0
+
+  if (len(names) > 0):
+    plot_counter = int(names[-1])+1
+
+  plotfile = data_dir+"/{:03d}{:s}".format(plot_counter,ext) 
+  print("saving to "+plotfile)
+  plt.savefig(plotfile)
+
+def make_gif():
+  anim_dir = animation_cache()
+  import os
+  from IPython.display import Image
+  os.system("cd "+anim_dir+"; convert *.png animation.gif")
+  with open(anim_dir+'/animation.gif','rb') as f:
+    display(Image(data=f.read(), format='png'))
+    
+    
+def animation_cache():
+  import os
+  notebook = notebook_path()
+  my_anim_dir = notebook.replace(".ipynb","_anim")
+  if(not(os.path.isdir(my_anim_dir))):
+    os.mkdir(my_anim_dir)
+  return my_anim_dir
+
+def clear_animation_cache():
+  import os
+  anim_dir = animation_cache()
+  os.system("rm -rf {:s}/*".format(anim_dir))    
 
 def pickle_this(this,name):
   import pickle

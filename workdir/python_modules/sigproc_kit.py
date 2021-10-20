@@ -140,6 +140,8 @@ def shift_vector(xs, n):
 def shift_time(data_x,data_y,tdiff):
   delta_t = data_x[1]-data_x[0]
   tdiff_samples = int(tdiff/delta_t)
+  if( tdiff_samples == 0):
+    return (data_x, data_y)
   return (data_x, shift_vector(data_y,tdiff_samples))
 
 

@@ -127,5 +127,17 @@ RUN apt-get update && \
   python3-sympy \
   python3-pandas
 
-
-
+#
+#RUN apt-get update && \
+#  apt-get -y install \
+#  libcairo2-dev libpango1.0-dev ffmpeg
+#
+#RUN pip3 install --upgrade pip
+#RUN pip3 install setuptools && \
+#  pip3 install pythondialog python-vxi11 \
+#  jupyter \
+#  numpy scipy pyltspice python-vxi11 \
+#  pyserial \
+#  requests \
+#  jsonrpclib
+#RUN pip3 install manim
