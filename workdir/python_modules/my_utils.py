@@ -210,7 +210,7 @@ def animation_cache():
 def clear_animation_cache():
   import os
   anim_dir = animation_cache()
-  os.system("rm -rf {:s}/*".format(anim_dir))    
+  os.system("rm -rf {:s}".format(anim_dir))    
 
 def pickle_this(this,name):
   import pickle
