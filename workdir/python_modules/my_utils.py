@@ -197,6 +197,7 @@ def make_gif():
   os.system("cd "+anim_dir+"; convert *.png animation.gif")
   with open(anim_dir+'/animation.gif','rb') as f:
     display(Image(data=f.read(), format='png'))
+  clear_animation_cache()
     
     
 def animation_cache():
