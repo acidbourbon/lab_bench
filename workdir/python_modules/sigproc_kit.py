@@ -128,6 +128,8 @@ def load_and_resample(filename,target_x,**kwargs):
 
 
 def shift_vector(xs, n):
+    if n == 0:
+      return xs
     e = np.empty_like(xs)
     if n >= 0:
         e[:n] = 0
