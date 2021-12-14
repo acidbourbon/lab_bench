@@ -373,5 +373,6 @@ def detector_signal_fit(time,y,**kwargs):
   return (Q, tau1, tau2, delay, v_max, t_max)
 
 
-  
+def rising_edge_detect(y):
+  return np.array(y) * (1- np.array(shift_vector(y,1)))
   
