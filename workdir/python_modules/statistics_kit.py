@@ -80,3 +80,11 @@ def med3_filter(data):
   out += [data[len_data-1]]
   return np.array(out)
 
+def pearson(x,y):
+  my_sum = 0
+  mean_x = np.mean(x)
+  mean_y = np.mean(y)
+  for i in range(0,len(x)):
+    my_sum += (x[i]-mean_x)*(y[i]-mean_y)
+  return (my_sum/(len(x)))/(np.std(x)*np.std(y))
+
