@@ -228,8 +228,6 @@ def read_csv(filename):
 
 
 
-
-
 def discriminate(time,y,thresh,**kwargs):
     
   # argument structure has changed! no more hysteresis definiton by default
@@ -241,6 +239,7 @@ def discriminate(time,y,thresh,**kwargs):
     
   interpolate = kwargs.get("interpolate",True)
   
+  multi_hit = kwargs.get("multi_hit",False)
     
   out = np.zeros(len(y))
   
@@ -252,7 +251,10 @@ def discriminate(time,y,thresh,**kwargs):
   state = 1
   t1 = None
   tot = None
-  
+
+  t1_list = []
+  tot_list = []
+    
   for i in range(0,len(y)):
     v = y[i]
     
@@ -278,14 +280,26 @@ def discriminate(time,y,thresh,**kwargs):
             tot = time[i-1] + dt*thresh_frac -t1
           else:
             tot = time[i] - t1
+            
+          if t1 is None:
+            t1 = float('nan')
+          if tot is None:
+            tot = float('nan')
+          t1_list += [t1]
+          tot_list += [tot]
+          if multi_hit:
+            t1  = None
+            tot = None
     
     out[i] = state
-    
-  if t1 is None:
-    t1 = float('nan')
-  if tot is None:
-    tot = float('nan')
-  return (1-out, t1, tot)
+  if multi_hit:  
+    return (1-out, np.array(t1_list), np.array(tot_list))
+  else:
+    return (1-out, t1_list[0], tot_list[0])
+
+
+
+
 
 def rise_time(time,y,**kwargs):
   lo = kwargs.get("lo",0)
