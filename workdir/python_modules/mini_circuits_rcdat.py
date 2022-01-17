@@ -67,6 +67,27 @@ def set_att(att):
 def set_att_lin(att_lin):
   att = -20*np.log(att_lin)/np.log(10)
   set_att(att)
+    
+##################################################
+##    _real functions cancel insertion loss     ##
+##################################################
+    
+    
+def set_att_real(att_real):
+  att = att_real - 3.5
+
+  if (att < 0):
+    raise NameError("cannot set this attenuation")
+  send_cmd("SETATT={:3.3f}".format(att))
+  readback_att = get_att()
+  if(abs(readback_att -att) <.25):
+    print("new attenuation: {:3.3f} dB".format(readback_att))
+  else:
+    raise NameError("could not set desired attenuation")
+    
+def set_att_lin_real(att_lin):
+  att = -20*np.log(att_lin)/np.log(10)
+  set_att_real(att)
 
 
     
