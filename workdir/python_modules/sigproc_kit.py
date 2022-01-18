@@ -7,6 +7,50 @@ from scipy import interpolate
 from scipy.optimize import curve_fit
 
 
+
+
+
+def square_pulse(x,**kwargs):
+
+  on_val      = float(kwargs.get("on_val",1))
+  idle_val    = float(kwargs.get("idle_val",0))
+  width       = float(kwargs.get("width",1))
+  delay       = float(kwargs.get("delay",1))
+  invert      = int(kwargs.get("invert",0))
+  
+  
+  yscale      = float(kwargs.get("yscale",1))
+  xscale      = float(kwargs.get("xscale",1))
+  
+  leading_edge   = float(kwargs.get("leading_edge",0))
+  trailing_edge  = float(kwargs.get("trailing_edge",0))
+
+  delay += leading_edge/2
+  
+  xlist = []
+  ylist = []
+  
+  xlist += [-leading_edge/2]
+  ylist += [idle_val]
+  
+  xlist += [leading_edge/2]
+  ylist += [on_val]
+  
+  xlist += [width - trailing_edge/2]
+  ylist += [on_val]
+  
+  xlist += [width + trailing_edge/2]
+  ylist += [idle_val]
+  
+  
+  xdata = np.array(xlist) + delay
+  ydata = np.array(ylist)
+    
+  dummy, y = resample(x,xdata,ydata)
+  return y
+  
+
+
 def RC_filter(t,y,R,C):
   ir = 1/(R*C)*np.exp(-t/(R*C))
   return fft_convolve(t,[y,ir])
