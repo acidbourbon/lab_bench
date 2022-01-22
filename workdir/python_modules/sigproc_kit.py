@@ -339,7 +339,13 @@ def discriminate(time,y,thresh,**kwargs):
   if multi_hit:  
     return (1-out, np.array(t1_list), np.array(tot_list))
   else:
-    return (1-out, t1_list[0], tot_list[0])
+    t1 = float('nan')
+    tot = float('nan')
+    if len(t1_list):
+      t1 = t1_list[0]
+    if len(tot_list):
+      tot = tot_list[0]
+    return (1-out, t1, tot)
 
 
 
