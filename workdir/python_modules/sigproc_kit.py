@@ -46,7 +46,7 @@ def square_pulse(x,**kwargs):
   xdata = np.array(xlist) + delay
   ydata = np.array(ylist)
     
-  dummy, y = resample(x,xdata,ydata)
+  dummy, y = resample(x,xdata,ydata,fill_value=idle_val)
   return y
   
 
@@ -129,8 +129,9 @@ def gauss(x, **kwargs):
   return A*np.exp(-(x-mu)**2/(2.*sigma**2))
 
 
-def resample(target_x,data_x,data_y):
-  f = interpolate.interp1d(data_x,data_y,bounds_error=False, fill_value=0.)
+def resample(target_x,data_x,data_y,**kwargs):
+  fill_value = float(kwargs.get("fill_value",0))
+  f = interpolate.interp1d(data_x,data_y,bounds_error=False, fill_value=fill_value)
   out_x = target_x
   out_y = f(target_x)
   return (out_x,out_y)
