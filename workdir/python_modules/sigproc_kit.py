@@ -7,7 +7,8 @@ from scipy import interpolate
 from scipy.optimize import curve_fit
 
 
-
+def dB(x):
+    return 20*np.log10(x)
 
 
 def square_pulse(x,**kwargs):
@@ -64,13 +65,14 @@ def add_noise(t,y,**kwargs):
   rms = kwargs.get("rms",1)
   bw    = kwargs.get("bw",0)
   
-  noise = rms*np.random.normal(size=len(t))
+  noise = np.random.normal(size=len(t))
   if (bw != 0):
     R = 1
     C = 1/(bw*2*np.pi*R)
     noise = RC_filter(t,noise,R,C)
+    noise /= np.std(noise)
 
-  return y+noise
+  return y+rms*noise
 
 def nth_edge_time(t,y,n):
   counter = -1
