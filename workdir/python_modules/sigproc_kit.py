@@ -64,14 +64,26 @@ def CR_filter(t,y,R,C):
 def add_noise(t,y,**kwargs):
   rms = kwargs.get("rms",1)
   bw    = kwargs.get("bw",0)
-  
+    
+  sampling_freq = 1/t[1]-t[0]
+  # half the sampling rate is max frequency
+  # of the "sterile" gaussian noise
   noise = np.random.normal(size=len(t))
+
+  
   if (bw != 0):
+    # by RC filtering we lose amplitude
+    # so we introduce makeup gain to
+    # compensate for the part of the spectrum
+    # that was lost
+    
+    gain = np.sqrt(sampling_freq/2 * 1/bw)
+    
+    # single pole RC brick wall equivalent
     R = 1
     C = 1/(bw*4*R)
-    # single pole RC brick wall equivalent
-    noise = RC_filter(t,noise,R,C)
-    noise /= np.std(noise)
+    
+    noise = gain * RC_filter(t,noise,R,C)
 
   return y+rms*noise
 
