@@ -68,7 +68,8 @@ def add_noise(t,y,**kwargs):
   noise = np.random.normal(size=len(t))
   if (bw != 0):
     R = 1
-    C = 1/(bw*2*np.pi*R)
+    C = 1/(bw*4*R)
+    # single pole RC brick wall equivalent
     noise = RC_filter(t,noise,R,C)
     noise /= np.std(noise)
 
