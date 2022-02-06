@@ -76,6 +76,18 @@ def PZ_filter(t,y,**kwargs):
   conv_list = [y] + [ir]
   return fft_convolve(t,conv_list)
 
+def ZP_filter(t,y,**kwargs):
+  C  = float(kwargs.get("C",1));
+  R1 = float(kwargs.get("R1",1)); # the one parallel to the C
+  R2 = float(kwargs.get("R2",1)); # the one to GND
+  
+  tau1 = float(kwargs.get("tau1",R2*C));
+  tau2 = float(kwargs.get("tau2",(R1+R2)*C));
+    
+  ir = (tau1/tau2) * (deltafunc_dt(t) - (tau1-tau2)/(tau1*tau2)*np.exp(-t/tau2))
+  conv_list = [y] + [ir]
+  return fft_convolve(t,conv_list)
+
 def add_noise(t,y,**kwargs):
   rms = kwargs.get("rms",1)
   bw    = kwargs.get("bw",0)
