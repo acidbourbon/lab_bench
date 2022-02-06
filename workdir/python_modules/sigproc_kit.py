@@ -52,13 +52,17 @@ def square_pulse(x,**kwargs):
   
 
 
-def RC_filter(t,y,R,C):
+def RC_filter(t,y,R,C,**kwargs):
+  n = int(kwargs.get("n",1));
   ir = 1/(R*C)*np.exp(-t/(R*C))
-  return fft_convolve(t,[y,ir])
+  conv_list = [y] + n*[ir]
+  return fft_convolve(t,conv_list)
 
-def CR_filter(t,y,R,C):
+def CR_filter(t,y,R,C,**kwargs):
+  n = int(kwargs.get("n",1));
   ir = deltafunc_dt(t) - 1/(R*C)*np.exp(-t/(R*C))
-  return fft_convolve(t,[y,ir])
+  conv_list = [y] + n*[ir]
+  return fft_convolve(t,conv_list)
 
 
 def add_noise(t,y,**kwargs):
