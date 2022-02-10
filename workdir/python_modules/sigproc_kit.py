@@ -114,6 +114,16 @@ def add_noise(t,y,**kwargs):
 
   return y+rms*noise
 
+def add_thermal_noise(t,y,**kwargs):
+  bw    = kwargs.get("bw",1e9)
+  R    = kwargs.get("R",50)
+  T    = kwargs.get("T",300)
+
+  k_B = 13.806488e-24 # Boltzmann constant
+  e_n = np.sqrt(4*k_B*T*R)
+  v_rms = e_n*np.sqrt(bw)
+  return add_noise(t,y,rms=v_rms,bw=bw)
+
 def nth_edge_time(t,y,n):
   counter = -1
   last_state = 0
