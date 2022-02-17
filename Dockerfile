@@ -127,6 +127,11 @@ RUN apt-get update && \
   python3-sympy \
   python3-pandas
 
+RUN apt-get update && \
+  apt-get -y install \
+  libdevice-serialport-perl \
+  gnuplot
+
 #
 #RUN apt-get update && \
 #  apt-get -y install \
