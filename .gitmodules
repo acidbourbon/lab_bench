@@ -13,3 +13,6 @@
 [submodule "workdir/python_modules/kilom_spi"]
 	path = workdir/python_modules/kilom_spi
 	url = https://github.com/hennomann/kilom_spi
+[submodule "workdir/python_modules/voltage-divider"]
+	path = workdir/python_modules/voltage-divider
+	url = https://github.com/efosmark/voltage-divider
