@@ -230,4 +230,17 @@ def load_plot_pickle(file):
   import pickle
   pickle.load(open(file,"rb"))
 
-
+def write_csv(filename,vector_list,**kwargs):
+  delimiter = kwargs.get("delimiter",", ")
+  cols = len(vector_list)
+  print(cols)
+  rows = len(vector_list[0])
+  print(rows)
+  formatstring = ("{:e}"+delimiter)*(cols-1)+ "{:e}" + "\n"
+  with open(filename,"w") as f:
+    for i in range(len(vector_list[0])):
+      values = []
+      for j in range(cols):
+        values += [vector_list[j][i]]
+      f.write(formatstring.format(*values))
+    f.close()
