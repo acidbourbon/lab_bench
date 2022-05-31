@@ -13,3 +13,6 @@
 [submodule "workdir/python_modules/kilom_spi"]
 	path = workdir/python_modules/kilom_spi
 	url = https://github.com/hennomann/kilom_spi
+[submodule "workdir/python_modules/AFG31000_scripts"]
+	path = workdir/python_modules/AFG31000_scripts
+	url = https://github.com/acidbourbon/AFG31000_scripts
