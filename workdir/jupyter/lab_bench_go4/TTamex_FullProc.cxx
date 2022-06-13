@@ -77,7 +77,7 @@ TTamex_FullProc::TTamex_FullProc(const char* name) : TGo4EventProcessor(name)
 {
   cout << "**** TTamex_FullProc: Create instance " << name << endl;
 
-  fPar=dynamic_cast<TTamex_FullParam*> (MakeParameter("TamexControl", "TTamex_FullParam"));
+  fPar=dynamic_cast<TTamex_FullParam*> (MakeParameter("TamexControl", "TTamex_FullParam","set_TamexControl.C"));
   fCalibrationDone=kFALSE;
   Text_t c_mo_ch[MAX_CHA_AN][256];
   Text_t c_m_c  [MAX_CHA_AN][16];

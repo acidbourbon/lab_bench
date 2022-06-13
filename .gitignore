@@ -4,6 +4,9 @@ workdir/spice/*.txt
 *.log
 *.raw
 *.net
+*.o
+*.so
+*.d
 fort.40
 garfield.metafile*
 *_bak

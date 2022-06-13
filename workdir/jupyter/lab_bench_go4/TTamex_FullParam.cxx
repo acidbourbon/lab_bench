@@ -19,5 +19,5 @@ TTamex_FullParam::TTamex_FullParam(const char* name) :
    TGo4Parameter(name)
 {
    resetCalibration = kFALSE;
-   useOldCalibration = kFALSE;
+   useOldCalibration = kTRUE;
 }
