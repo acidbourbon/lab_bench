@@ -167,13 +167,11 @@ RUN apt-get update && \
 
 RUN apt-get update && \
   apt-get -y install \
-  subversion
-
-RUN apt-get update && \
-  apt-get -y install \
+  subversion \
   qt5-qmake \
   libhdf5-dev \
-  cmake 
+  cmake \
+  qt5-default
 
 
 
@@ -190,10 +188,6 @@ svn co https://subversion.gsi.de/go4/tags/602-00 602-00/
 
 # crude hack
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-RUN apt-get update && \
-  apt-get -y install \
-  qt5-default
 
 RUN . /root-build/bin/thisroot.sh; \
     cd /installations/go4/602-00; \

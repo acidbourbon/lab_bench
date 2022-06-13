@@ -1,1 +1,5 @@
- go4analysis -file 220602_pdc_bjt_twin_peaks_th_fst_15000_beam_0001.lmd -outevt-class TTamex_FullEvent -enable-store -store new.root -rate
+# file
+go4analysis -file 220602_pdc_bjt_twin_peaks_th_fst_15000_beam_0001.lmd -outevt-class TTamex_FullEvent -enable-store -store new.root -rate
+
+# from stream
+go4analysis -stream x86l-16 -outevt-class TTamex_FullEvent -enable-store -store new.root -rate
