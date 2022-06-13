@@ -1,0 +1,10 @@
+{ decls }
+namespace std {  }
+
+[ libGo4UserAnalysis.so ]
+# List of selected classes
+class TTamex_FullEvent
+class TTamex_FullParam
+class TTamex_FullProc
+class vector<Double_t>
+class vector<double>

@@ -146,3 +146,62 @@ RUN apt-get update && \
 #  requests \
 #  jsonrpclib
 #RUN pip3 install manim
+
+RUN apt-get update && \
+  apt-get -y install \
+  libgslcblas0 \
+  python3-numpy \
+  python3-scipy \
+  python3-matplotlib \
+  liblapack3 \
+  libboost-all-dev \
+  wget \
+  git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
+  libxft-dev libxext-dev
+
+
+# ##################################################
+# ##      trying to build Go4 into lab_bench      ##
+# ##################################################
+
+
+RUN apt-get update && \
+  apt-get -y install \
+  subversion
+
+RUN apt-get update && \
+  apt-get -y install \
+  qt5-qmake \
+  libhdf5-dev \
+  cmake 
+
+
+
+RUN mkdir -p /installations/go4; \
+cd /installations/go4; \
+# enable this to get most recent developer version
+#svn co https://subversion.gsi.de/go4/trunk 601-00/
+#enable this for tag 6.2.0
+svn co https://subversion.gsi.de/go4/tags/602-00 602-00/
+
+# we change default to build against hdf5 libs here:
+#COPY build/Makefile.discover /installations/go4/602-00/build/
+
+
+# crude hack
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+RUN apt-get update && \
+  apt-get -y install \
+  qt5-default
+
+RUN . /root-build/bin/thisroot.sh; \
+    cd /installations/go4/602-00; \
+    make -j6 withweb=1
+#RUN echo "Installation of Go4 6.2.0 done!"
+#RUN mv /root/.vnc/xstartup /root.vnc/xstartup.old 
+#COPY conf/xstartup_lxqt /root/.vnc/xstartup
+
+RUN echo ". /root-build/bin/thisroot.sh; export PYTHONPATH=\$PYTHONPATH:/workdir/python_modules; export PATH=\$PATH:/installations/go4/602-00/bin;  cd /workdir; ./start.sh " >entrypoint.sh ; chmod +x entrypoint.sh
+ENTRYPOINT "/entrypoint.sh"
+
