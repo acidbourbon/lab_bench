@@ -35,3 +35,10 @@ lab_bench_MW
 *.raw
 *Copy1*
 *Copy2*
+workdir/jupyter/lab_bench_go4/G__*
+workdir/jupyter/lab_bench_go4/*.txt
+workdir/jupyter/lab_bench_go4/*.pcm
+workdir/jupyter/lab_bench_go4/*.rootmap
+workdir/jupyter/lab_bench_go4/set_TamexControl.C
+
+
