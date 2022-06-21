@@ -184,6 +184,13 @@ def gauss(x, **kwargs):
   A = kwargs.get("A",1./(sigma*(2.*np.pi)**0.5)) ## default amplitude generates bell curve with area = 1
   return A*np.exp(-(x-mu)**2/(2.*sigma**2))
 
+def landau(x, **kwargs):
+  mpv = kwargs.get("mpv",0)
+  xscale = kwargs.get("xscale",1)
+  A = kwargs.get("A",1.)
+  L = (x-mpv)/xscale
+  return A* 1/np.sqrt(2.*np.pi)*np.exp(-0.5*(L+np.exp(-L)))
+
 
 def resample(target_x,data_x,data_y,**kwargs):
   fill_value = float(kwargs.get("fill_value",0))
