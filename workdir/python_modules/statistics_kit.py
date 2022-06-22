@@ -29,7 +29,9 @@ def median_slices(x,y,**kwargs):
   out_x_list = []
   out_y_list = []
     
-  xedges=kwargs.get("xedges",np.linspace(np.min(x),np.max(x),20))
+  n_bins = kwargs.get("n_bins",20)
+    
+  xedges=kwargs.get("xedges",np.linspace(np.min(x),np.max(x),n_bins))
     
 
   for i in range(0,len(xedges)-1):
@@ -48,8 +50,10 @@ def median_slices(x,y,**kwargs):
 def median_x_std_y_slices(x,y,**kwargs):
   out_x_list = []
   out_y_list = []
+  
+  n_bins = kwargs.get("n_bins",20)
     
-  xedges=kwargs.get("xedges",np.linspace(np.min(x),np.max(x),20))
+  xedges=kwargs.get("xedges",np.linspace(np.min(x),np.max(x),n_bins))
     
 
   for i in range(0,len(xedges)-1):
