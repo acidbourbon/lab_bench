@@ -13,6 +13,7 @@ used in the container.
 
 ```
 git clone https://github.com/acidbourbon/lab_bench
+cd lab_bench
 git submodule init
 git submodule update
 ```
@@ -71,4 +72,17 @@ git submodule init
 git submodule update
 
 git commit -a -m "blah"
+```
+## updating a git submodule from within lab_bench
+```
+# you find yourself in a detached head unnamed branch of your submodule
+git checkout main # or "master"
+git commit -a -m "changes to submodule"
+git push
+
+cd .. # you are now in the lab_bench git
+
+git commit -a -m "changes (including submodule changes) of lab_bench"
+git push
+
 ```
