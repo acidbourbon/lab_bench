@@ -85,10 +85,25 @@ def med3_filter(data):
   return np.array(out)
 
 def pearson(x,y):
+  x_ = np.array(x)
+  y_ = np.array(y)
   my_sum = 0
-  mean_x = np.mean(x)
-  mean_y = np.mean(y)
-  for i in range(0,len(x)):
-    my_sum += (x[i]-mean_x)*(y[i]-mean_y)
-  return (my_sum/(len(x)))/(np.std(x)*np.std(y))
+  mean_x = np.mean(x_)
+  mean_y = np.mean(y_)
+  for i in range(0,len(x_)):
+    my_sum += (x_[i]-mean_x)*(y_[i]-mean_y)
+  return (my_sum/(len(x_)))/(np.std(x_)*np.std(y_))
 
+
+def pearson_regression(x,y):
+  x_ = np.array(x)
+  y_ = np.array(y)
+  my_sum = 0
+  mean_x = np.mean(x_)
+  mean_y = np.mean(y_)
+  for i in range(0,len(x_)):
+    my_sum += (x_[i]-mean_x)*(y_[i]-mean_y)
+  r = (my_sum/(len(x_)))/(np.std(x_)*np.std(y_))
+  m = r * np.std(y_)/np.std(x_)
+  y0 = mean_y- m * mean_x
+  return m,y0
