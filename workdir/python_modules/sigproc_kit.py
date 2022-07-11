@@ -58,6 +58,14 @@ def RC_filter(t,y,R,C,**kwargs):
   conv_list = [y] + n*[ir]
   return fft_convolve(t,conv_list)
 
+def RLC_filter(t,y,R,L,C,**kwargs):
+  n = int(kwargs.get("n",1));
+  t_ = t-t[0]
+  root_term = np.sqrt(1/(L*C) - (R/(2*L))**2 )
+  ir = 1/root_term *np.exp(-t_*R/(2*L))*np.sin(root_term*t_)
+  conv_list = [y] + n*[ir]
+  return fft_convolve(t,conv_list)
+
 def CR_filter(t,y,R,C,**kwargs):
   n = int(kwargs.get("n",1));
   t_ = t-t[0]
