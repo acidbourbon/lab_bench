@@ -513,4 +513,22 @@ def detector_signal_fit(time,y,**kwargs):
 
 def rising_edge_detect(y):
   return np.array(y) * (1- np.array(shift_vector(y,1)))
+
+def falling_edge_detect(y):
+  return (1-np.array(y)) * (np.array(shift_vector(y,1)))
   
+def SR_FF(s,r):
+  out = s * 0;
+  out[0] = 0;
+  for i in range(1,len(s)):
+    if s[i] >0.5:
+      out[i] = 1
+    elif r[i] > 0.5:
+      out[i] = 0
+    else:
+      out[i] = out[i-1]
+  
+  return out
+    
+    
+    
