@@ -529,6 +529,14 @@ def SR_FF(s,r):
       out[i] = out[i-1]
   
   return out
+
+
+def barrel_shift(string,n):
+    if( n == 0):
+        return string
+    else:
+        m = -n
+        return string[m:] + string[0:m]
     
     
     
