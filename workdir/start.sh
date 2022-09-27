@@ -15,6 +15,7 @@ tmux new-window -t main -n "tab7" "/bin/bash"
 tmux new-window -t main -n "tab8" "/bin/bash"
 
 tmux new-window -t main -n "jupyter" "cd jupyter;./start_jupyter.sh; /bin/bash"
+tmux new-window -t main -n "voila" "cd jupyter; voila --no-browser --port 8866 --Voila.ip=0.0.0.0; /bin/bash"
 
 
 tmux select-window -t main:tab1

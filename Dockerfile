@@ -199,3 +199,18 @@ RUN . /root-build/bin/thisroot.sh; \
 RUN echo ". /root-build/bin/thisroot.sh; export PYTHONPATH=\$PYTHONPATH:/workdir/python_modules; export PATH=\$PATH:/installations/go4/602-00/bin;  cd /workdir; ./start.sh " >entrypoint.sh ; chmod +x entrypoint.sh
 ENTRYPOINT "/entrypoint.sh"
 
+
+
+
+
+
+# Set the locale - fixes some problems with voila on the command line
+RUN apt-get -y install locales
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8 
+
+RUN pip3 install --upgrade pip
+RUN pip3 install voila
