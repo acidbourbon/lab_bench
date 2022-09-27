@@ -214,3 +214,4 @@ ENV LC_ALL en_US.UTF-8
 
 RUN pip3 install --upgrade pip
 RUN pip3 install voila
+RUN pip3 install ipympl ipyvolume
