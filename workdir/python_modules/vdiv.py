@@ -73,6 +73,7 @@ def vdiv(vl,vh,**kwargs):
   print("R_down    : {:3.3f} R".format(b))
   print("V_low real: {:3.3f} V".format(vl_real))
   print("rel. error: {:3.3f} %".format(rel_error*100))
+  return (a,b,vl_real,rel_error)
     
 
 def rfrac(frac,**kwargs):
@@ -88,3 +89,4 @@ def rfrac(frac,**kwargs):
   print("R_denominator : {:3.3f} R".format(a))
   print("frac real     : {:3.3f} V".format(frac_real))
   print("rel. error    : {:3.3f} %".format(rel_error*100))
+  return (b,a,frac_real,rel_error)
