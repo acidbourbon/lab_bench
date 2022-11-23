@@ -14,9 +14,7 @@ class grid:
     self.y_step = y_step
     self.x_edges = np.arange(x_min,x_max,x_step)
     self.y_edges = np.arange(y_min,y_max,y_step)
-    #X, Y = np.meshgrid(self.xedges, self.yedges)
-    #self.X = X
-    #self.Y = Y
+    self.X, self.Y = np.meshgrid(self.x_edges, self.y_edges)
   def pos_to_index(self,x,y):
     j = int( (x-self.x_min)/self.x_step )
     i = int( (y-self.y_min)/self.y_step )
