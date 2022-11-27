@@ -94,4 +94,23 @@ def E_from_V(potential):
     
     return E
     
+def rho_from_V(potential):
+    
+    rho    = field(potential.grid)
+    x_step = potential.grid.x_step
+    y_step = potential.grid.y_step
+    
 
+    neigh_R = potential.matrix.copy()
+    neigh_R[:,0:-2] = potential.matrix[:,1:-1]
+    neigh_L = potential.matrix.copy()
+    neigh_L[:,1:-1] = potential.matrix[:,0:-2]
+    neigh_U = potential.matrix.copy()
+    neigh_U[0:-2,:] = potential.matrix[1:-1,:]
+    neigh_D = potential.matrix.copy()
+    neigh_D[1:-1,:] = potential.matrix[0:-2,:]
+
+    rho.matrix =  (neigh_U + neigh_D - 2*potential.matrix) / (y_step*y_step)\
+                + (neigh_L + neigh_R - 2*potential.matrix) / (x_step*x_step)
+    
+    return rho
