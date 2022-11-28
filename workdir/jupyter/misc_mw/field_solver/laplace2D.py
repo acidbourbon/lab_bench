@@ -88,20 +88,31 @@ def relax_2D(potential,fixed_mask):
 
     potential.matrix[:,:] = 0.25*(neigh_U + neigh_D + neigh_L + neigh_R)*omask + old_matrix*fmask
     
-def E_from_V(potential):
+def D_from_V(potential):
     
-    E      = field(potential.grid,nd=2)
+    D      = field(potential.grid,nd=2)
     x_step = potential.grid.x_step
     y_step = potential.grid.y_step
     
-    Ex = copy.copy(potential.matrix)
-    Ey = copy.copy(potential.matrix)
+    Dx = copy.copy(potential.matrix)
+    Dy = copy.copy(potential.matrix)
     
-    Ex[:,0:-2] = -(Ex[:,1:-1] - Ex[:,0:-2])/x_step
-    Ey[0:-2,:] = -(Ey[1:-1,:] - Ey[0:-2,:])/y_step
+    Dx[:,0:-2] = -(Dx[:,1:-1] - Dx[:,0:-2])/x_step
+    Dy[0:-2,:] = -(Dy[1:-1,:] - Dy[0:-2,:])/y_step
     
-    E.matrix[:,:,0] = Ex
-    E.matrix[:,:,1] = Ey
+    D.matrix[:,:,0] = Dx
+    D.matrix[:,:,1] = Dy
+    
+    return D
+
+def E_from_V(potential):
+    
+    E = D_from_V(potential)
+    #E.matrix[:,:,0] /= epsilon.matrix
+    #E.matrix[:,:,1] /= epsilon.matrix
+    E.matrix[:,:,0] /= eps_0
+    E.matrix[:,:,1] /= eps_0
+    
     
     return E
     
