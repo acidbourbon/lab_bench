@@ -4,6 +4,8 @@ from matplotlib import pyplot as plt
 import copy
 
 
+eps_0 = 8.854187817e-12
+
 class grid:
   def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
     self.x_min   = x_min
@@ -41,6 +43,15 @@ class conductor:
     self.y_min = y_min
     self.y_max = y_max
     self.V = V 
+    self.color = color
+    
+class dielectric:
+  def __init__(self,x_min,x_max,y_min,y_max,color="green",eps_r=1):
+    self.x_min = x_min
+    self.x_max = x_max
+    self.y_min = y_min
+    self.y_max = y_max
+    self.eps_r = eps_r 
     self.color = color
     
     
@@ -86,8 +97,8 @@ def E_from_V(potential):
     Ex = copy.copy(potential.matrix)
     Ey = copy.copy(potential.matrix)
     
-    Ex[:,0:-2] = (Ex[:,1:-1] - Ex[:,0:-2])/x_step
-    Ey[0:-2,:] = (Ey[1:-1,:] - Ey[0:-2,:])/y_step
+    Ex[:,0:-2] = -(Ex[:,1:-1] - Ex[:,0:-2])/x_step
+    Ey[0:-2,:] = -(Ey[1:-1,:] - Ey[0:-2,:])/y_step
     
     E.matrix[:,:,0] = Ex
     E.matrix[:,:,1] = Ey
@@ -110,7 +121,7 @@ def rho_from_V(potential):
     neigh_D = potential.matrix.copy()
     neigh_D[1:-1,:] = potential.matrix[0:-2,:]
 
-    rho.matrix =  (neigh_U + neigh_D - 2*potential.matrix) / (y_step*y_step)\
-                + (neigh_L + neigh_R - 2*potential.matrix) / (x_step*x_step)
+    rho.matrix = -eps_0*( (neigh_U + neigh_D - 2*potential.matrix) / (y_step*y_step) \
+                         +(neigh_L + neigh_R - 2*potential.matrix) / (x_step*x_step) )
     
     return rho
