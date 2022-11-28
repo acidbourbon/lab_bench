@@ -88,35 +88,32 @@ def relax_2D(potential,fixed_mask):
 
     potential.matrix[:,:] = 0.25*(neigh_U + neigh_D + neigh_L + neigh_R)*omask + old_matrix*fmask
     
-def D_from_V(potential):
+def E_from_V(potential):
     
-    D      = field(potential.grid,nd=2)
+    E      = field(potential.grid,nd=2)
     x_step = potential.grid.x_step
     y_step = potential.grid.y_step
     
-    Dx = copy.copy(potential.matrix)
-    Dy = copy.copy(potential.matrix)
+    Ex = copy.copy(potential.matrix)
+    Ey = copy.copy(potential.matrix)
     
-    Dx[:,0:-2] = -(Dx[:,1:-1] - Dx[:,0:-2])/x_step
-    Dy[0:-2,:] = -(Dy[1:-1,:] - Dy[0:-2,:])/y_step
+    Ex[:,0:-2] = -(Ex[:,1:-1] - Ex[:,0:-2])/x_step
+    Ey[0:-2,:] = -(Ey[1:-1,:] - Ey[0:-2,:])/y_step
     
-    D.matrix[:,:,0] = Dx
-    D.matrix[:,:,1] = Dy
-    
-    return D
-
-def E_from_V(potential):
-    
-    E = D_from_V(potential)
-    #E.matrix[:,:,0] /= epsilon.matrix
-    #E.matrix[:,:,1] /= epsilon.matrix
-    E.matrix[:,:,0] /= eps_0
-    E.matrix[:,:,1] /= eps_0
-    
+    E.matrix[:,:,0] = Ex
+    E.matrix[:,:,1] = Ey
     
     return E
+
+def D_from_V(potential,epsilon):
     
-def rho_from_V(potential):
+    D = E_from_V(potential)
+    D.matrix[:,:,0] *= epsilon.matrix
+    D.matrix[:,:,1] *= epsilon.matrix
+    
+    return D
+    
+def rho_from_V(potential,epsilon=eps_0):
     
     rho    = field(potential.grid)
     x_step = potential.grid.x_step
@@ -131,8 +128,12 @@ def rho_from_V(potential):
     neigh_U[0:-2,:] = potential.matrix[1:-1,:]
     neigh_D = potential.matrix.copy()
     neigh_D[1:-1,:] = potential.matrix[0:-2,:]
+    
+    my_epsilon = epsilon
+    if type(epsilon) == field:
+        my_epsilon = epsilon.matrix
 
-    rho.matrix = -eps_0*( (neigh_U + neigh_D - 2*potential.matrix) / (y_step*y_step) \
+    rho.matrix = -my_epsilon*( (neigh_U + neigh_D - 2*potential.matrix) / (y_step*y_step) \
                          +(neigh_L + neigh_R - 2*potential.matrix) / (x_step*x_step) )
     
     return rho
