@@ -136,3 +136,51 @@ def rho_from_V(potential):
                          +(neigh_L + neigh_R - 2*potential.matrix) / (x_step*x_step) )
     
     return rho
+
+def relax_2D_dielectric(potential,fixed_mask,epsilon):
+    old_matrix = potential.matrix
+    eps_matrix = np.sqrt(epsilon.matrix)
+
+    # fixed potential areas
+    fmask = fixed_mask.matrix
+    # open areas - free space where the field spreads
+    omask = 1 - fmask
+
+    neigh_R = old_matrix.copy()
+    neigh_R[:,0:-2] = old_matrix[:,1:-1]
+    neigh_L = old_matrix.copy()
+    neigh_L[:,1:-1] = old_matrix[:,0:-2]
+    neigh_U = old_matrix.copy()
+    neigh_U[0:-2,:] = old_matrix[1:-1,:]
+    neigh_D = old_matrix.copy()
+    neigh_D[1:-1,:] = old_matrix[0:-2,:]
+    
+    eps_R = eps_matrix.copy()
+    eps_L = eps_matrix.copy()
+    eps_U = eps_matrix.copy()
+    eps_D = eps_matrix.copy()
+    eps_D[1:-1,:] = eps_matrix[0:-2,:]
+    eps_U[0:-2,:] = eps_matrix[1:-1,:]
+    eps_R[:,0:-2] = eps_matrix[:,1:-1]
+    eps_L[:,1:-1] = eps_matrix[:,0:-2]
+    
+
+    potential.matrix[:,:] =  1./(eps_R + eps_L + eps_U + eps_D) \
+       *(  eps_L * neigh_L \
+         + eps_R * neigh_R \
+         + eps_U * neigh_U \
+         + eps_D * neigh_D )*omask\
+       + old_matrix*fmask
+    
+def gen_dielectric_field(grid,dielectric_list):
+    epsilon = field(grid)
+    epsilon.matrix += eps_0
+    
+    for dielectric in dielectric_list:
+        i_min, j_min = grid.pos_to_index(dielectric.x_min,dielectric.y_min)
+        i_max, j_max = grid.pos_to_index(dielectric.x_max,dielectric.y_max)
+        size_i = i_max - i_min 
+        size_j = j_max - j_min 
+        epsilon.matrix[i_min:i_max,j_min:j_max] = np.ones([size_i,size_j])*dielectric.eps_r*eps_0
+        
+    return epsilon
