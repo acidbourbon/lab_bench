@@ -20,6 +20,14 @@ class grid:
   def pos_to_index(self,x,y):
     j = int( (x-self.x_min)/self.x_step )
     i = int( (y-self.y_min)/self.y_step )
+    max_i = len(self.y_edges)-1
+    max_j = len(self.x_edges)-1
+    
+    i = np.min([i,max_i])
+    i = np.max([i,0])
+    j = np.min([j,max_j])
+    j = np.max([j,0])
+    
     return (i,j)
     
 class field:
