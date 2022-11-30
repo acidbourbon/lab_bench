@@ -2,57 +2,109 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 import copy
+from numpy.fft import fft2, ifft2
 
 
 eps_0 = 8.854187817e-12
+mu_0 = 1.256637061e-6
 
 class grid:
-  def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
-    self.x_min   = x_min
-    self.x_max   = x_max
-    self.x_step = x_step
-    self.y_min   = y_min
-    self.y_max   = y_max
-    self.y_step = y_step
-    self.x_edges = np.arange(x_min,x_max,x_step)
-    self.y_edges = np.arange(y_min,y_max,y_step)
-    self.X, self.Y = np.meshgrid(self.x_edges, self.y_edges)
-  def pos_to_index(self,x,y):
-    j = int( (x-self.x_min)/self.x_step )
-    i = int( (y-self.y_min)/self.y_step )
-    max_i = len(self.y_edges)-1
-    max_j = len(self.x_edges)-1
+    def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
+        self.x_min   = x_min
+        self.x_max   = x_max
+        self.x_step = x_step
+        self.y_min   = y_min
+        self.y_max   = y_max
+        self.y_step = y_step
+        self.x_edges = np.arange(x_min,x_max,x_step)
+        self.y_edges = np.arange(y_min,y_max,y_step)
+        self.X, self.Y = np.meshgrid(self.x_edges, self.y_edges)
+        
+    def pos_to_index(self,x,y):
+        j = int( (x-self.x_min)/self.x_step )
+        i = int( (y-self.y_min)/self.y_step )
+        max_i = len(self.y_edges)-1
+        max_j = len(self.x_edges)-1
+        
+        i = np.min([i,max_i])
+        i = np.max([i,0])
+        j = np.min([j,max_j])
+        j = np.max([j,0])
+        
+        return (i,j)
     
-    i = np.min([i,max_i])
-    i = np.max([i,0])
-    j = np.min([j,max_j])
-    j = np.max([j,0])
+    def B_kernel(self):
     
-    return (i,j)
+        x_step = self.x_step
+        y_step = self.y_step
+    
+        lenj = 2*len(self.x_edges)
+        leni = 2*len(self.y_edges)
+        
+        B = np.zeros([leni,lenj,2])
+        
+        ii = int(leni/2)
+        jj = int(lenj/2)
+        
+        for i in range(leni):
+            for j in range(lenj):
+                
+                dy = y_step*(ii-i)    
+                dx = x_step*(jj-j)
+                d  = np.sqrt(dx**2+dy**2)
+                
+                if d == 0:
+                    continue
+                
+                B[i,j,0] += 1./d**3 * (-dy)
+                B[i,j,1] += 1./d**3 * ( dx)
+        B *= mu_0/(2*np.pi)
+        return B
+    
+
+def Bconv(j,k):
+    # this folds the B field from a thin wire (k)
+    # with the current density (j)
+    # k is twice the size of j
+    
+    si,sj = j.shape
+    jj = np.zeros([si*2,sj*2])
+    #kk = np.zeros([si*2,sj*2])
+    
+    jj[0:si,0:sj] = j
+    #kk[0:si,0:sj] = k
+    kk = k
+    
+    fr  = fft2(jj)
+    fr2 = fft2(np.flipud(np.fliplr(kk)))
+    cc = np.real(ifft2(fr*fr2))
+    cc = np.roll(cc, int(-si+1),axis=0)
+    cc = np.roll(cc, int(-sj+1),axis=1)
+    
+    return cc[0:si,0:sj]
+    
     
 class field:
-  def __init__(self, grid, nd=1):
-    self.grid = grid
-    self.nd   = nd
-    if self.nd > 1:
-        self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges),self.nd])
-    else:
-        self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
-  def reset_matrix(self):
-    if self.nd > 1:
-        self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges),self.nd])
-    else:
-        self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
-  def abs_matrix(self):
-    if self.nd > 1:
-        m = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
-        for d in range(self.matrix.shape[2]):
-            m += self.matrix[:,:,d]**2
-        return np.sqrt(m)
-    else:
-        return np.abs(self.matrix)
-           
-                 
+    def __init__(self, grid, nd=1):
+        self.grid = grid
+        self.nd   = nd
+        if self.nd > 1:
+            self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges),self.nd])
+        else:
+            self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
+    def reset_matrix(self):
+        if self.nd > 1:
+            self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges),self.nd])
+        else:
+            self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
+    def abs_matrix(self):
+        if self.nd > 1:
+            m = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
+            for d in range(self.matrix.shape[2]):
+                m += self.matrix[:,:,d]**2
+            return np.sqrt(m)
+        else:
+            return np.abs(self.matrix)
     
 class conductor:
   def __init__(self,x_min,x_max,y_min,y_max,color="blue",V=0):
