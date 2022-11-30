@@ -43,6 +43,16 @@ class field:
         self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges),self.nd])
     else:
         self.matrix = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
+  def abs_matrix(self):
+    if self.nd > 1:
+        m = np.zeros([len(self.grid.y_edges),len(self.grid.x_edges)])
+        for d in range(self.matrix.shape[2]):
+            m += self.matrix[:,:,d]**2
+        return np.sqrt(m)
+    else:
+        return np.abs(self.matrix)
+           
+                 
     
 class conductor:
   def __init__(self,x_min,x_max,y_min,y_max,color="blue",V=0):
