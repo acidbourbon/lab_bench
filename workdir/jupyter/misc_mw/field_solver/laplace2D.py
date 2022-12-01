@@ -12,10 +12,10 @@ class grid:
     def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
         self.x_min   = x_min
         self.x_max   = x_max
-        self.x_step = x_step
+        self.x_step  = x_step
         self.y_min   = y_min
         self.y_max   = y_max
-        self.y_step = y_step
+        self.y_step  = y_step
         self.area_element = x_step * y_step
         self.x_edges = np.arange(x_min,x_max,x_step)
         self.y_edges = np.arange(y_min,y_max,y_step)
@@ -321,6 +321,13 @@ def conductor_link(grid,conductor1,conductor2):
     return link , dl, normal_vec
 
 
+def B_of_conductors(J,conductor_list):
+    
+    Jmasked = field(J.grid)
+    conductor_mask, dummy = conductors_to_mask(rho.grid,conductor_list)
+    Jmasked.matrix = J.matrix * conductor_mask.matrix
+   
+    return B_from_J(Jmasked,conductor_mask)
 
 
 def flux_between_conductors(B,conductor1,conductor2):
