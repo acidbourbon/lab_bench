@@ -6,7 +6,7 @@ from numpy.fft import fft2, ifft2
 
 
 eps_0 = 8.854187817e-12
-mu_0 = 1.256637061e-6
+mu_0  = 1.256637061e-6
 
 class grid:
     def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
@@ -137,6 +137,9 @@ class conductor:
     self.V = V 
     self.color = color
     
+    self.x_center = (x_max + x_min)/2.
+    self.y_center = (y_max + y_min)/2.
+    
 class dielectric:
   def __init__(self,x_min,x_max,y_min,y_max,color="green",eps_r=1):
     self.x_min = x_min
@@ -145,6 +148,8 @@ class dielectric:
     self.y_max = y_max
     self.eps_r = eps_r 
     self.color = color
+    self.x_center = (x_max + x_min)/2
+    self.y_center = (y_max + y_min)/2
     
     
 def conductors_to_mask(grid,conductor_list):
@@ -282,6 +287,50 @@ def charge_on_conductor(rho,conductor):
     c_mask, dummy = conductors_to_mask(rho.grid,[conductor])
     area_element = rho.grid.x_step * rho.grid.y_step
     return np.sum(rho.matrix * c_mask.matrix) * area_element
+
+
+def conductor_link(grid,conductor1,conductor2):
+    link = field(grid)
+    
+    i1,j1 = grid.pos_to_index(conductor1.x_center,conductor1.y_center)
+    link.matrix[i1,j1] = 1
+    i2,j2 = grid.pos_to_index(conductor2.x_center,conductor2.y_center)
+    link.matrix[i2,j2] = 1
+    
+    di = i2-i1
+    dj = j2-j1
+    
+    dy = di * grid.y_step
+    dx = dj * grid.x_step
+    
+    npix = np.max([abs(di),abs(dj)])
+    
+    for k in range(npix):
+        ii = i1 + round(di*k/npix)
+        jj = j1 + round(dj*k/npix)
+        link.matrix[ii,jj] = 1
+        
+    npix += 1  # number of pixels that have been drawn
+    
+    length = np.sqrt((dj*grid.x_step)**2 + (di*grid.y_step)**2)
+    
+    normal_vec = np.array([-dy,dx])/np.sqrt(dx**2+dy**2)
+    
+    dl = length/(npix-1)
+    
+    return link , dl, normal_vec
+
+
+
+
+def flux_between_conductors(B,conductor1,conductor2):
+    
+    link , dl, normal_vec = conductor_link(B.grid,conductor1,conductor2)
+    
+    phi   = dl*( np.sum(link.matrix * B.matrix[:,:,0] * normal_vec[0])
+                +np.sum(link.matrix * B.matrix[:,:,1] * normal_vec[1]) )
+    return phi
+    
 
 
 ##################################################
