@@ -16,6 +16,7 @@ class grid:
         self.y_min   = y_min
         self.y_max   = y_max
         self.y_step = y_step
+        self.area_element = x_step * y_step
         self.x_edges = np.arange(x_min,x_max,x_step)
         self.y_edges = np.arange(y_min,y_max,y_step)
         self.X, self.Y = np.meshgrid(self.x_edges, self.y_edges)
@@ -37,6 +38,7 @@ class grid:
     
         x_step = self.x_step
         y_step = self.y_step
+        area_element = x_step * y_step
     
         lenj = 2*len(self.x_edges)
         leni = 2*len(self.y_edges)
@@ -51,13 +53,13 @@ class grid:
                 
                 dy = y_step*(ii-i)    
                 dx = x_step*(jj-j)
-                d  = np.sqrt(dx**2+dy**2)
+                dpow2  = dx**2+dy**2 # d**2
                 
-                if d == 0:
+                if dpow2 == 0:
                     continue
                 
-                B[i,j,0] += 1./d**3 * (-dy)
-                B[i,j,1] += 1./d**3 * ( dx)
+                B[i,j,0] += 1./dpow2 * (-dy)
+                B[i,j,1] += 1./dpow2 * ( dx)
         B *= mu_0/(2*np.pi)
         return B
     
@@ -83,6 +85,26 @@ def Bconv(j,k):
     
     return cc[0:si,0:sj]
     
+def B_from_J(J,conductor_mask=None): # J is the current density
+    B_kernel = J.grid.B_kernel()
+    B = field(J.grid,nd=2)
+    
+    if(conductor_mask is None):
+        B.matrix[:,:,0] = Bconv(J.matrix,B_kernel[:,:,0])
+        B.matrix[:,:,1] = Bconv(J.matrix,B_kernel[:,:,1])
+    else:
+        mask = 1-conductor_mask.matrix
+        B.matrix[:,:,0] = Bconv(J.matrix,B_kernel[:,:,0])*mask
+        B.matrix[:,:,1] = Bconv(J.matrix,B_kernel[:,:,1])*mask
+    return B
+
+def B_of_conductors(J,conductor_list):
+    
+    Jmasked = field(J.grid)
+    conductor_mask, dummy = conductors_to_mask(J.grid,conductor_list)
+    Jmasked.matrix = J.matrix * conductor_mask.matrix
+   
+    return B_from_J(Jmasked,conductor_mask)
     
 class field:
     def __init__(self, grid, nd=1):
@@ -255,3 +277,59 @@ def gen_dielectric_field(grid,dielectric_list):
         epsilon.matrix[i_min:i_max,j_min:j_max] = np.ones([size_i,size_j])*dielectric.eps_r*eps_0
         
     return epsilon
+
+def charge_on_conductor(rho,conductor):
+    c_mask, dummy = conductors_to_mask(rho.grid,[conductor])
+    area_element = rho.grid.x_step * rho.grid.y_step
+    return np.sum(rho.matrix * c_mask.matrix) * area_element
+
+
+##################################################
+##                  graveyard                   ##
+##################################################
+
+
+# calculate B field without convolution
+
+#def B_of_conductor(conductor,rho,fixed_mask):
+#
+#    my_grid = rho.grid
+#
+#    B = field(my_grid,nd=2)
+#
+#    conductor_mask, dummy = conductors_to_mask(my_grid,[conductor])
+#
+#    I = rho.matrix * conductor_mask.matrix
+#    signI = np.sign(I)
+#    I *= signI/np.sum(I)
+#
+#
+#    inmask = conductor_mask.matrix
+#    outmask = 1-fixed_mask.matrix
+#
+#    x_step = my_grid.x_step
+#    y_step = my_grid.y_step
+#
+#
+#    leni, lenj = I.shape
+#
+#    for i in range(leni):
+#        for j in range(lenj):
+#
+#            if not(outmask[i,j]):
+#                continue
+#
+#            for ii in range(leni):
+#                for jj in range(lenj):
+#
+#                    if not(inmask[ii,jj]):
+#                        continue
+#                    dy = y_step*(ii-i)    
+#                    dx = x_step*(jj-j)
+#                    d  = np.sqrt(dx**2+dy**2)
+#                    B.matrix[i,j,0] += 1./d**3 * I[ii,jj] * (-dy)
+#                    B.matrix[i,j,1] += 1./d**3 * I[ii,jj] * ( dx)
+#    B.matrix *= mu_0/(2*np.pi)
+#    return B
+                
+        
