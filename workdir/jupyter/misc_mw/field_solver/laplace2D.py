@@ -324,7 +324,7 @@ def conductor_link(grid,conductor1,conductor2):
 def B_of_conductors(J,conductor_list):
     
     Jmasked = field(J.grid)
-    conductor_mask, dummy = conductors_to_mask(rho.grid,conductor_list)
+    conductor_mask, dummy = conductors_to_mask(J.grid,conductor_list)
     Jmasked.matrix = J.matrix * conductor_mask.matrix
    
     return B_from_J(Jmasked,conductor_mask)
@@ -338,6 +338,19 @@ def flux_between_conductors(B,conductor1,conductor2):
                 +np.sum(link.matrix * B.matrix[:,:,1] * normal_vec[1]) )
     return phi
     
+
+def poynting_z(E,B):
+    Sz = field(E.grid)
+
+    # poynting vector = ExB
+    
+    Ex = E.matrix[:,:,0] 
+    Ey = E.matrix[:,:,1] 
+    Bx = B.matrix[:,:,0] 
+    By = B.matrix[:,:,1] 
+    
+    Sz.matrix = (Ex*By - Ey*Bx)/mu_0
+    return Sz
 
 
 ##################################################
