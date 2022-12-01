@@ -8,6 +8,32 @@ from numpy.fft import fft2, ifft2
 eps_0 = 8.854187817e-12
 mu_0  = 1.256637061e-6
 
+def quarter_grid(g,n=1):
+    # create an identical grid to g, but with pixels twice as big
+    small_grid = grid(g.x_min,g.x_max,g.x_step*(2**n),g.y_min,g.y_max,g.y_step*(2**n))
+    
+    return small_grid
+
+
+def up4scale(M):
+    m,n = M.shape
+    N = np.zeros([m*2,n*2])
+    N[0::2,0::2] = M
+    N[1::2,0::2] = M
+    N[0::2,1::2] = M
+    N[1::2,1::2] = M
+    
+    # next neighbor interpolation
+    N[1:-2:2,0::2]   = 0.5*(N[0:-3:2,0::2] + N[2:-1:2,0::2])
+    N[0::2,1:-2:2,]  = 0.5*(N[0::2,0:-3:2] + N[0::2,2:-1:2])
+    N[1:-2:2,1:-2:2] = 0.5*(N[0:-3:2,0:-3:2] + N[2:-1:2,2:-1:2])
+    
+    #N[1:-3:2,0::2]   = 0.5*(M[0:-2,0:]   + M[1:-1,0:])
+    #N[0::2,1:-3:2]  = 0.5*(M[0:,0:-2]   + M[0:,1:-1])
+    #N[1:-3:2,1:-3:2] = 0.5*(M[0:-2,0:-2] + M[1:-1,1:-1])
+    
+    return N
+
 class grid:
     def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
         self.x_min   = x_min
