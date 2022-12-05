@@ -8,7 +8,7 @@ from numpy.fft import fft2, ifft2
 eps_0 = 8.854187817e-12
 mu_0  = 1.256637061e-6
 
-def quarter_grid(g,n=1):
+def coarsen_grid(g,n=1):
     # create an identical grid to g, but with pixels twice as big
     small_grid = grid(g.x_min,g.x_max,g.x_step*(2**n),g.y_min,g.y_max,g.y_step*(2**n))
     
@@ -34,6 +34,22 @@ def up4scale(M):
     
     return N
 
+#def coarse_matrix(M,n=1):
+#    return M[::(2**n),::(2**n)]
+
+def coarsen_field(F,n=1):
+    new_grid = coarsen_grid(F.grid,n=n)
+     
+    new_field = field(new_grid, nd=F.nd)
+    if F.nd == 1:
+        new_field.matrix = F.matrix[::(2**n),::(2**n)]
+    else:
+        new_field.matrix = F.matrix[::(2**n),::(2**n),:]
+    return new_field
+        
+                                               
+    
+
 class grid:
     def __init__(self,x_min,x_max,x_step,y_min,y_max,y_step):
         self.x_min   = x_min
@@ -46,6 +62,7 @@ class grid:
         self.x_edges = np.arange(x_min,x_max,x_step)
         self.y_edges = np.arange(y_min,y_max,y_step)
         self.X, self.Y = np.meshgrid(self.x_edges, self.y_edges)
+        self.shape = (len(self.y_edges),len(self.x_edges))
         
     def pos_to_index(self,x,y):
         j = int( (x-self.x_min)/self.x_step )
