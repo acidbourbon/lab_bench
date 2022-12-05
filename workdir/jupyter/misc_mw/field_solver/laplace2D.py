@@ -8,6 +8,95 @@ from numpy.fft import fft2, ifft2
 eps_0 = 8.854187817e-12
 mu_0  = 1.256637061e-6
 
+
+
+
+
+
+def compute_potential(grid, conductor_list, dielectric_list, target_precision):
+    
+    conductor_mask  = None
+    start_potential = None
+    epsilon         = None
+    potential       = None
+
+    max_iterations_per_step = 10000
+
+
+    stepping_levels = 10
+
+    levels = list(range(stepping_levels))
+    levels.reverse()
+
+    for n in levels:
+        temp_grid = coarsen_grid(grid,n=n)
+
+        si,sj = temp_grid.shape
+        if np.min([si,sj]) < 10:
+            #print("small enough, skip this step")
+            continue
+            
+        print("stepping level n={}".format(n))
+
+        conductor_mask, start_potential = conductors_to_mask(temp_grid,conductor_list)
+        epsilon                         = gen_dielectric_field(temp_grid,dielectric_list)
+
+        if potential is None:
+            potential                       = copy.deepcopy(start_potential)
+        else:
+            upscaled_matrix = up4scale(potential.matrix) # upscale matrix from previous step
+            potential  = copy.deepcopy(start_potential)
+            si,sj = potential.matrix.shape
+            potential.matrix[0:si,0:sj] = upscaled_matrix[0:si,0:sj] 
+
+            # update the precise shapes of the conductors
+            potential.matrix = potential.matrix * (1-conductor_mask.matrix) \
+                                + start_potential.matrix*(conductor_mask.matrix)
+
+
+
+
+        # do a check every 10 iterations if we fulfilled the convergence criterion yet
+        for i in range(int(max_iterations_per_step)):
+            old_potential = None
+            if i % 10 == 0:
+                old_potential = copy.deepcopy(potential)
+
+            relax_2D_dielectric(potential,conductor_mask,epsilon)
+
+            if i % 10 == 0:
+                maxdiff = np.max(abs(old_potential.matrix-potential.matrix))
+                print("\r",end="")
+                print("iteration {}".format(i),end="")
+                if maxdiff < target_precision:
+                    print("\r",end="")
+                    print("did {} iterations - stopping".format(i),end="")
+                    break
+
+
+
+
+        print("")
+
+        #print("step n={} done".format(n))
+    print("target precision of {:3.3e} V reached on full sized grid ... stopping iteration".format(target_precision))
+        
+    return potential, epsilon
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def coarsen_grid(g,n=1):
     # create an identical grid to g, but with pixels twice as big
     small_grid = grid(g.x_min,g.x_max,g.x_step*(2**n),g.y_min,g.y_max,g.y_step*(2**n))
