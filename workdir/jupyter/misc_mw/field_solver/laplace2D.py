@@ -152,6 +152,7 @@ class grid:
         self.y_edges = np.arange(y_min,y_max,y_step)
         self.X, self.Y = np.meshgrid(self.x_edges, self.y_edges)
         self.shape = (len(self.y_edges),len(self.x_edges))
+        self.B_kernel_cache = None
         
     def pos_to_index(self,x,y):
         j = int( (x-self.x_min)/self.x_step )
@@ -167,33 +168,38 @@ class grid:
         return (i,j)
     
     def B_kernel(self):
+        
+        if self.B_kernel_cache is None:
     
-        x_step = self.x_step
-        y_step = self.y_step
-        area_element = x_step * y_step
-    
-        lenj = 2*len(self.x_edges)
-        leni = 2*len(self.y_edges)
-        
-        B = np.zeros([leni,lenj,2])
-        
-        ii = int(leni/2)
-        jj = int(lenj/2)
-        
-        for i in range(leni):
-            for j in range(lenj):
-                
-                dy = y_step*(ii-i)    
-                dx = x_step*(jj-j)
-                dpow2  = dx**2+dy**2 # d**2
-                
-                if dpow2 == 0:
-                    continue
-                
-                B[i,j,0] += 1./dpow2 * (-dy)
-                B[i,j,1] += 1./dpow2 * ( dx)
-        B *= mu_0/(2*np.pi)
-        return B
+            x_step = self.x_step
+            y_step = self.y_step
+            area_element = x_step * y_step
+
+            lenj = 2*len(self.x_edges)
+            leni = 2*len(self.y_edges)
+
+            B = np.zeros([leni,lenj,2])
+
+            ii = int(leni/2)
+            jj = int(lenj/2)
+
+            for i in range(leni):
+                for j in range(lenj):
+
+                    dy = y_step*(ii-i)    
+                    dx = x_step*(jj-j)
+                    dpow2  = dx**2+dy**2 # d**2
+
+                    if dpow2 == 0:
+                        continue
+
+                    B[i,j,0] += 1./dpow2 * (-dy)
+                    B[i,j,1] += 1./dpow2 * ( dx)
+            B *= mu_0/(2*np.pi)
+            self.B_kernel_cache = B
+            return B
+        else:
+            return self.B_kernel_cache
     
 
 def Bconv(j,k):
