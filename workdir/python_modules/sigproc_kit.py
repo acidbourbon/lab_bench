@@ -282,6 +282,25 @@ def fft_convolve(x,time_vec_list,**kwargs):
   
   return np.fft.irfft(freq_vec)[0:samples]
 
+def fft_deconvolve(x,time_vec_list,**kwargs):
+  delta_t = x[1]-x[0]
+  
+  ## adds half the sample width at the back, so signal components at the right end of the sample have no effect on
+  ## on the left side, remember, that the fft gives us a circular convolution
+  padding = kwargs.get("padding",0.5) ## by default, pad 50 % of the sample width at the back
+  samples = len(time_vec_list[0])
+  pad_samples = int(padding*samples)
+  pad_vector = np.zeros(pad_samples)
+  
+  freq_vec = None
+  for time_vec in time_vec_list:
+    if freq_vec is None:
+      freq_vec = np.fft.rfft(np.concatenate((time_vec,pad_vector)))
+    else:
+      freq_vec = freq_vec / np.fft.rfft(np.concatenate((time_vec,pad_vector)) * delta_t)
+  
+  return np.fft.irfft(freq_vec)[0:samples]
+
 
 def fft_gauss_LPF(x,time_vec,**kwargs):
   delta_t = x[1]-x[0]
@@ -539,4 +558,14 @@ def barrel_shift(string,n):
         return string[m:] + string[0:m]
     
     
-    
+
+def fft_convolve2d(x,y):
+    from numpy.fft import fft2, ifft2
+    """ 2D convolution, using FFT"""
+    fr = fft2(x)
+    fr2 = fft2(np.flipud(np.fliplr(y)))
+    m,n = fr.shape
+    cc = np.real(ifft2(fr*fr2))
+    cc = np.roll(cc, int(-m/2+1),axis=0)
+    cc = np.roll(cc, int(-n/2+1),axis=1)
+    return cc
