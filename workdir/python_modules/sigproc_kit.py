@@ -425,8 +425,14 @@ def discriminate(time,y,thresh,**kwargs):
           if multi_hit:
             t1  = None
             tot = None
-    
+            
     out[i] = state
+            
+  # looped through all statistics - handle the case that you only got a rising edge but no falling
+  if (state == 0) and (len(t1_list) == 0) and not(t1 is None):
+    t1_list += [t1]
+    tot_list += [tot]
+    
   if multi_hit:  
     return (1-out, np.array(t1_list), np.array(tot_list))
   else:
@@ -569,3 +575,9 @@ def fft_convolve2d(x,y):
     cc = np.roll(cc, int(-m/2+1),axis=0)
     cc = np.roll(cc, int(-n/2+1),axis=1)
     return cc
+
+
+
+def CF_shaper(t,y,fraction,delay):
+    dummy, delayed = shift_time(t,y,delay)
+    return -fraction * y + delayed

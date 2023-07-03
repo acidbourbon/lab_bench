@@ -5,10 +5,13 @@ import os
 
 def hist2d(x,y,**kwargs):
   from matplotlib import pyplot as plt
+  from matplotlib import colors
+    
   import numpy as np
 
   xedges = kwargs.get("xedges",np.linspace(np.min(x),np.max(x),100))
   yedges = kwargs.get("yedges",np.linspace(np.min(y),np.max(y),100))
+  logz   = kwargs.get("logz",False)
   
   
   H, xedges, yedges = np.histogram2d( x, y, bins=(xedges, yedges))
@@ -22,7 +25,11 @@ def hist2d(x,y,**kwargs):
   #// https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html
   cmap = plt.get_cmap('jet')
   
-  plt.pcolormesh(X, Y, H, cmap=cmap)
+  
+  if(logz):
+    plt.pcolormesh(X, Y, H, cmap=cmap, norm=colors.LogNorm())
+  else:
+    plt.pcolormesh(X, Y, H, cmap=cmap)
   
   plt.xlabel(kwargs.get("xlabel",""))
   plt.ylabel(kwargs.get("ylabel",""))
