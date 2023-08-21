@@ -536,11 +536,13 @@ def detector_signal_fit(time,y,**kwargs):
   return (Q, tau1, tau2, delay, v_max, t_max)
 
 
-def rising_edge_detect(y):
-  return np.array(y) * (1- np.array(shift_vector(y,1)))
+def rising_edge_detect(y_):
+  y = (y_ >= 0.5)
+  return (np.array(y) * (1- np.array(shift_vector(y,1))) >= 0.5)
 
-def falling_edge_detect(y):
-  return (1-np.array(y)) * (np.array(shift_vector(y,1)))
+def falling_edge_detect(y_):
+  y = (y_ >= 0.5)
+  return ((1-np.array(y)) * (np.array(shift_vector(y,1)))) >= 0.5
   
 def SR_FF(s,r):
   out = s * 0;
