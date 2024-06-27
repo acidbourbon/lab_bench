@@ -583,3 +583,12 @@ def fft_convolve2d(x,y):
 def CF_shaper(t,y,fraction,delay):
     dummy, delayed = shift_time(t,y,delay)
     return -fraction * y + delayed
+
+def CFD(t,y,fraction,delay):
+    # apply the constant fraction shaper
+    shaped = CF_shaper(t,y,fraction,delay)
+    # find the index (time) of the waveform minimum
+    index = np.argmin(shaped)
+    # find the zero crossing, starting from the waveform minimum
+    # to ignore baseline noise before the pulse starts
+    return discriminate(t[index:],shaped[index:],0)
