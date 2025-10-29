@@ -155,13 +155,13 @@ def sqwave(x):
   return 2*((np.ceil(x/np.pi)%2)-0.5)
 
 def rampwave(x):
-  return -1 + x/np.pi
+  return -1 + (x/np.pi)%2
 
 def invrampwave(x):
-  return 1 - x/np.pi
+  return 1 - (x/np.pi)%2
 
-def triwave(x):
-    
+def triwave(x_):
+  x = x_%(2*np.pi) 
   return (x < np.pi/2)*(2*x/np.pi) \
        + (x >= np.pi/2)*(x < 3./2*np.pi)*(1-(x-np.pi/2)/(np.pi/2)) \
        + (x >= 3./2*np.pi)*(-1+(x-3./2.*np.pi)/(np.pi/2))
