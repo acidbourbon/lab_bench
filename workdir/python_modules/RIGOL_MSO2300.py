@@ -236,6 +236,7 @@ def capture_waveforms(sources,**kwargs):
   
   for i in range(0,average):
     trigger_single()
+    time.sleep(0.050)
     for source in sources:
       x,y_ = transfer_waveform(source,**kwargs)
       if avg_runs == 0:
@@ -252,6 +253,7 @@ def capture_waveforms(sources,**kwargs):
   for source in sources:
     y[source] /= float(average)
   
+  trigger_normal()
     
   return x,y
 
@@ -262,6 +264,17 @@ def trigger_single():
 
   # single sequence
   scope.write(":TRIGGER:SWEEP SINGLE")
+  # run
+  scope.write(":RUN")
+
+
+def trigger_normal():
+  if (not("scope" in local_objects.keys())):
+    raise NameError("there is no running communication session with oscilloscope!\nrun init() first!")
+  scope = local_objects["scope"]
+
+  # single sequence
+  scope.write(":TRIGGER:SWEEP NORMAL")
   # run
   scope.write(":RUN")
 
