@@ -444,8 +444,8 @@ def conductor_link(grid,conductor1,conductor2):
     npix = np.max([abs(di),abs(dj)])
     
     for k in range(npix):
-        ii = i1 + round(di*k/npix)
-        jj = j1 + round(dj*k/npix)
+        ii = int(i1 + round(di*k/npix))
+        jj = int(j1 + round(dj*k/npix))
         link.matrix[ii,jj] = 1
         
     npix += 1  # number of pixels that have been drawn
